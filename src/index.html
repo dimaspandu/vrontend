@@ -20,6 +20,8 @@
   <!-- The router replaces #app on every navigation. -->
   <main class="layout__main" id="app"></main>
 
-  <script src="./index.js" type="module"></script>
+  <!-- Absolute path on purpose: a relative "./index.js" would resolve to
+       /task/index.js on a deep link such as /task/8, where it does not exist. -->
+  <script src="/index.js" type="module"></script>
 </body>
 </html>
