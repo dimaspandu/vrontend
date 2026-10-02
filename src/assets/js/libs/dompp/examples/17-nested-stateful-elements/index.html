@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../../assets/favicon.svg"
+  />
+
+  <title>
+    Nested Stateful Elements
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+
+      line-height:
+        1.7;
+    }
+
+    .container {
+
+      max-width:
+        1200px;
+
+      margin:
+        0 auto;
+
+      padding:
+        48px 24px 96px;
+    }
+
+    h1 {
+
+      font-size:
+        48px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .description {
+
+      max-width:
+        860px;
+
+      color:
+        #666;
+
+      margin-bottom:
+        40px;
+    }
+
+    .important {
+
+      background:
+        linear-gradient(
+          135deg,
+          #fff8db,
+          #fff1a8
+        );
+
+      border:
+        1px solid #f0d000;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+
+      margin-bottom:
+        40px;
+
+      color:
+        #5c4b00;
+    }
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        32px;
+
+      align-items:
+        start;
+    }
+
+    .panel {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .panel h2 {
+
+      margin-top:
+        0;
+
+      margin-bottom:
+        20px;
+    }
+
+    .parent {
+
+      border:
+        2px solid #111;
+
+      border-radius:
+        18px;
+
+      padding:
+        24px;
+    }
+
+    .child {
+
+      margin-top:
+        24px;
+
+      background:
+        #f0f0f0;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+    }
+
+    .count {
+
+      font-size:
+        48px;
+
+      font-weight:
+        bold;
+
+      margin:
+        12px 0 20px;
+    }
+
+    .row {
+
+      display:
+        flex;
+
+      gap:
+        12px;
+
+      flex-wrap:
+        wrap;
+    }
+
+    button {
+
+      border:
+        none;
+
+      background:
+        black;
+
+      color:
+        white;
+
+      padding:
+        12px 16px;
+
+      border-radius:
+        10px;
+
+      cursor:
+        pointer;
+    }
+
+    pre {
+
+      margin:
+        0;
+
+      overflow:
+        auto;
+
+      background:
+        #111;
+
+      color:
+        #f5f5f5;
+
+      padding:
+        20px;
+
+      border-radius:
+        16px;
+
+      font-size:
+        14px;
+
+      line-height:
+        1.7;
+    }
+
+    code {
+
+      font-family:
+        Consolas,
+        monospace;
+
+      padding:
+        2px 6px;
+
+      border-radius:
+        6px;
+    }
+
+    .code-keyword {
+      color: #ff7b72;
+    }
+
+    .code-method {
+      color: #79c0ff;
+    }
+
+    .code-string {
+      color: #a5d6ff;
+    }
+
+    .code-property {
+      color: #d2a8ff;
+    }
+
+    .code-variable {
+      color: #ffa657;
+    }
+
+    .code-comment {
+      color: #8b949e;
+      font-style: italic;
+    }
+
+    .notes {
+
+      margin-top:
+        24px;
+
+      color:
+        #666;
+
+      font-size:
+        14px;
+    }
+
+    @media (max-width: 900px) {
+
+      .layout {
+
+        grid-template-columns:
+          1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ================================= -->
+  <!-- HEADER -->
+  <!-- ================================= -->
+
+  <h1>
+    Nested Stateful Elements
+  </h1>
+
+  <p class="description">
+
+    DOM++ allows stateful elements
+    to exist inside other stateful elements.
+
+    <br /><br />
+
+    This example demonstrates how
+    nested runtime ownership behaves
+    when parent and child state mutate
+    independently.
+
+  </p>
+
+  <!-- ================================= -->
+  <!-- IMPORTANT -->
+  <!-- ================================= -->
+
+  <div class="important">
+
+    <strong>
+      Important
+    </strong>
+
+    <br /><br />
+
+    State in DOM++ is attached directly
+    to DOM elements.
+
+    <br /><br />
+
+    Nested stateful elements maintain
+    isolated local state ownership.
+
+    <br /><br />
+
+    Child state survives parent updates
+    as long as the child DOM node itself
+    is preserved.
+
+    <ul>
+
+      <li>
+        parent rerenders do not automatically
+        destroy child state
+      </li>
+
+      <li>
+        child state remains attached
+        to the child element
+      </li>
+
+      <li>
+        replacing the child node entirely
+        resets child state
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- ================================= -->
+  <!-- LAYOUT -->
+  <!-- ================================= -->
+
+  <div class="layout">
+
+    <!-- ================================= -->
+    <!-- CODE -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Nested State Pattern
+      </h2>
+
+<pre><code><span class="code-comment">// =====================================</span>
+<span class="code-comment">// CHILD ELEMENT</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">function</span> <span class="code-variable">createChildCounter</span>() {
+  <span class="code-keyword">return</span> document
+    .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+    .<span class="code-method">setState</span>({
+      <span class="code-property">count</span>: 0
+    })
+    .<span class="code-method">setChildren</span>(({
+      state,
+      setState
+    }) => [
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"h3"</span>)
+        .<span class="code-method">setText</span>(
+          <span class="code-string">`Child Count: ${state.count}`</span>
+        ),
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"button"</span>)
+        .<span class="code-method">setText</span>(
+          <span class="code-string">"Increment Child"</span>
+        )
+        .<span class="code-method">setEvents</span>({
+          <span class="code-property">click</span>() {
+            setState({
+              <span class="code-property">count</span>:
+                state.count + 1
+            });
+          }
+        })
+    ]);
+}
+
+<span class="code-keyword">const</span> <span class="code-variable">child</span> =
+  createChildCounter();
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// PARENT ELEMENT</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">const</span> <span class="code-variable">parent</span> =
+  document
+    .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+    .<span class="code-method">setState</span>({
+      <span class="code-property">count</span>: 0
+    })
+    .<span class="code-method">setChildren</span>(({
+      state,
+      setState
+    }) => [
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"h2"</span>)
+        .<span class="code-method">setText</span>(
+          <span class="code-string">`Parent Count: ${state.count}`</span>
+        ),
+      child
+    ]);</code></pre>
+
+      <div class="notes">
+
+        <strong>
+          Notes
+        </strong>
+
+        <ul>
+
+          <li>
+            child state is attached directly
+            to the child DOM node
+          </li>
+
+          <li>
+            parent rerenders reuse the same
+            child reference
+          </li>
+
+          <li>
+            child state survives parent updates
+          </li>
+
+          <li>
+            replacing the child element entirely
+            resets child state
+          </li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+    <!-- ================================= -->
+    <!-- LIVE -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Live Preview
+      </h2>
+
+      <div id="app"></div>
+
+    </section>
+
+  </div>
+
+</div>
+
+<script
+  type="module"
+  src="../../src/index.js"
+></script>
+
+<script type="module">
+
+// =====================================
+// CHILD ELEMENT
+// =====================================
+
+function createChildCounter() {
+
+  return document
+
+    .createElement("div")
+
+    .setAttributes({
+      class: "child"
+    })
+
+    .setState({
+      count: 0
+    })
+
+    .setChildren(({
+      state,
+      setState
+    }) => [
+
+      // ===============================
+      // TITLE
+      // ===============================
+
+      document
+
+        .createElement("h3")
+
+        .setText(
+          "Nested Child State"
+        ),
+
+      // ===============================
+      // COUNT
+      // ===============================
+
+      document
+
+        .createElement("div")
+
+        .setAttributes({
+          class: "count"
+        })
+
+        .setText(
+          `${state.count}`
+        ),
+
+      // ===============================
+      // BUTTON
+      // ===============================
+
+      document
+
+        .createElement("button")
+
+        .setText(
+          "Increment Child"
+        )
+
+        .setEvents({
+          click() {
+
+            setState({
+              count:
+                state.count + 1
+            });
+
+          }
+        })
+    ]);
+}
+
+// =====================================
+// CHILD INSTANCE
+// =====================================
+
+let child =
+  createChildCounter();
+
+// =====================================
+// PARENT ELEMENT
+// =====================================
+
+const parent =
+
+  document
+
+    .createElement("div")
+
+    .setAttributes({
+      class: "parent"
+    })
+
+    .setState({
+      count: 0
+    })
+
+    .setChildren(({
+      state,
+      setState
+    }) => [
+
+      // ===============================
+      // TITLE
+      // ===============================
+
+      document
+
+        .createElement("h2")
+
+        .setText(
+          "Parent Stateful Element"
+        ),
+
+      // ===============================
+      // COUNT
+      // ===============================
+
+      document
+
+        .createElement("div")
+
+        .setAttributes({
+          class: "count"
+        })
+
+        .setText(
+          `${state.count}`
+        ),
+
+      // ===============================
+      // CONTROLS
+      // ===============================
+
+      document
+
+        .createElement("div")
+
+        .setAttributes({
+          class: "row"
+        })
+
+        .setChildren(
+
+          // ===========================
+          // INCREMENT PARENT
+          // ===========================
+
+          document
+
+            .createElement("button")
+
+            .setText(
+              "Increment Parent"
+            )
+
+            .setEvents({
+              click() {
+
+                setState({
+                  count:
+                    state.count + 1
+                });
+
+              }
+            }),
+
+          // ===========================
+          // REPLACE CHILD
+          // ===========================
+
+          document
+
+            .createElement("button")
+
+            .setText(
+              "Replace Child"
+            )
+
+            .setEvents({
+              click() {
+
+                child =
+                  createChildCounter();
+
+                setState({
+                  count:
+                    state.count
+                });
+
+              }
+            })
+        ),
+
+      // ===============================
+      // CHILD
+      // ===============================
+
+      child
+    ]);
+
+// =====================================
+// APP
+// =====================================
+
+app.setChildren(
+  parent
+);
+
+</script>
+
+</body>
+</html>

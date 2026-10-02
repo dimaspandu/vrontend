@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../assets/favicon.svg"
+  />
+
+  <title>
+    DOM++ Examples
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+
+      margin: 0;
+
+      height: 100%;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+    }
+
+    body {
+      display: flex;
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===================================
+       MOBILE TOGGLE
+    =================================== */
+
+    #menu-toggle {
+
+      position: absolute;
+
+      opacity: 0;
+
+      pointer-events: none;
+    }
+
+    /* ===================================
+       SIDEBAR
+    =================================== */
+
+    .sidebar {
+
+      width: 340px;
+
+      background:
+        #111;
+
+      color:
+        white;
+
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      border-right:
+        1px solid rgba(255,255,255,0.08);
+
+      position:
+        relative;
+
+      height:
+        100vh;
+    }
+
+    .sidebar-header {
+
+      padding:
+        28px;
+
+      border-bottom:
+        1px solid rgba(255,255,255,0.08);
+    }
+
+    .runtime-badge {
+
+      display:
+        inline-block;
+
+      margin-bottom:
+        18px;
+
+      padding:
+        6px 12px;
+
+      border-radius:
+        999px;
+
+      background:
+        rgba(255,255,255,0.08);
+
+      border:
+        1px solid rgba(255,255,255,0.12);
+
+      font-size:
+        11px;
+
+      letter-spacing:
+        1px;
+
+      opacity:
+        0.9;
+    }
+
+    .sidebar-header h1 {
+
+      margin:
+        0 0 12px;
+
+      font-size:
+        32px;
+    }
+
+    .sidebar-header p {
+
+      margin: 0;
+
+      color:
+        rgba(255,255,255,0.72);
+
+      line-height:
+        1.8;
+
+      font-size:
+        14px;
+    }
+
+    .sidebar-count {
+
+      margin-top:
+        18px;
+
+      font-size:
+        13px;
+
+      color:
+        rgba(255,255,255,0.45);
+    }
+
+    .nav {
+
+      flex: 1;
+
+      overflow: auto;
+
+      padding:
+        16px;
+    }
+
+    .group-title {
+
+      font-size:
+        12px;
+
+      text-transform:
+        uppercase;
+
+      letter-spacing:
+        1px;
+
+      opacity:
+        0.5;
+
+      margin:
+        28px 12px 14px;
+    }
+
+    .nav a {
+
+      display:
+        block;
+
+      color:
+        white;
+
+      padding:
+        14px 16px;
+
+      border-radius:
+        14px;
+
+      margin-bottom:
+        6px;
+
+      transition:
+        background 0.15s ease;
+    }
+
+    .nav a:hover {
+
+      background:
+        rgba(255,255,255,0.08);
+    }
+
+    .nav a.active {
+
+      background:
+        white;
+
+      color:
+        black;
+
+      font-weight:
+        bold;
+    }
+
+    .sidebar-footer {
+
+      padding:
+        20px 24px;
+
+      border-top:
+        1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar-footer a {
+
+      color:
+        rgba(255,255,255,0.72);
+
+      font-size:
+        14px;
+    }
+
+    /* ===================================
+       CONTENT
+    =================================== */
+
+    .content {
+
+      flex: 1;
+
+      display: flex;
+
+      flex-direction: column;
+
+      overflow: hidden;
+    }
+
+    .topbar {
+
+      min-height:
+        72px;
+
+      background:
+        white;
+
+      border-bottom:
+        1px solid #ddd;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      padding:
+        0 24px;
+    }
+
+    .topbar strong {
+
+      display:
+        block;
+
+      font-size:
+        16px;
+    }
+
+    .topbar-subtitle {
+
+      font-size:
+        13px;
+
+      color:
+        #666;
+
+      margin-top:
+        4px;
+
+      font-weight:
+        normal;
+    }
+
+    iframe {
+
+      flex: 1;
+
+      width: 100%;
+
+      border: none;
+
+      background:
+        white;
+    }
+
+    /* ===================================
+       HAMBURGER
+    =================================== */
+
+    .hamburger {
+
+      display:
+        none;
+
+      width:
+        44px;
+
+      height:
+        44px;
+
+      flex-direction:
+        column;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      cursor:
+        pointer;
+
+      padding:
+        8px;
+
+      position:
+        relative;
+
+      z-index:
+        70;
+
+      background:
+        transparent;
+    }
+
+    .hamburger .bar {
+
+      width:
+        22px;
+
+      height:
+        2px;
+
+      background:
+        #111;
+
+      display:
+        inline-block;
+
+      margin:
+        3px 0;
+
+      border-radius:
+        1px;
+
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+    /* ===================================
+       MOBILE
+    =================================== */
+
+    @media (max-width: 900px) {
+
+      body {
+        flex-direction: column;
+      }
+
+      .hamburger {
+
+        display:
+          inline-flex;
+
+        position:
+          fixed;
+
+        top:
+          12px;
+
+        right:
+          12px;
+
+        background:
+          rgba(255,255,255,0);
+
+        border-radius:
+          8px;
+
+        z-index:
+          70;
+      }
+
+      .sidebar {
+
+        width:
+          100%;
+
+        height:
+          100vh;
+
+        position:
+          fixed;
+
+        top:
+          0;
+
+        left:
+          0;
+
+        transform:
+          translateY(-100%);
+
+        transition:
+          transform 0.25s ease;
+
+        z-index:
+          60;
+      }
+
+      #menu-toggle:checked ~ .sidebar {
+        transform: translateY(0);
+      }
+
+      label.overlay-backdrop {
+        display: none;
+      }
+
+      #menu-toggle:checked ~ label.overlay-backdrop {
+
+        display:
+          block;
+
+        position:
+          fixed;
+
+        inset:
+          0;
+
+        background:
+          rgba(0,0,0,0.35);
+
+        z-index:
+          50;
+      }
+
+      #menu-toggle:checked + .hamburger .bar:nth-child(1) {
+
+        transform:
+          translateY(6px)
+          rotate(45deg);
+
+        background:
+          white;
+      }
+
+      #menu-toggle:checked + .hamburger .bar:nth-child(2) {
+
+        transform:
+          scaleX(0);
+
+        opacity:
+          0;
+      }
+
+      #menu-toggle:checked + .hamburger .bar:nth-child(3) {
+
+        transform:
+          translateY(-6px)
+          rotate(-45deg);
+
+        background:
+          white;
+      }
+
+      .topbar {
+
+        padding-left:
+          16px;
+
+        padding-right:
+          56px;
+      }
+
+      .nav a {
+
+        padding:
+          16px 18px;
+
+        font-size:
+          16px;
+      }
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+<!-- ===================================
+     MOBILE TOGGLE
+=================================== -->
+
+<input
+  id="menu-toggle"
+  type="checkbox"
+/>
+
+<label
+  class="hamburger"
+  for="menu-toggle"
+>
+
+  <span class="bar"></span>
+  <span class="bar"></span>
+  <span class="bar"></span>
+
+</label>
+
+<label
+  class="overlay-backdrop"
+  for="menu-toggle"
+></label>
+
+<!-- ===================================
+     SIDEBAR
+=================================== -->
+
+<aside class="sidebar">
+
+  <div class="sidebar-header">
+
+    <div class="runtime-badge">
+      EXPERIMENTAL RUNTIME
+    </div>
+
+    <h1>
+      DOM++
+    </h1>
+
+    <p>
+
+      Browser-native mutation runtime
+      exploring deterministic DOM updates,
+      optional reactivity,
+      fine-grained signals,
+      and progressive enhancement.
+
+      <br /><br />
+
+      Examples progressively introduce:
+      mutation semantics,
+      reactive runtime behavior,
+      state ownership,
+      and DOM identity preservation.
+
+    </p>
+
+    <div class="sidebar-count">
+      21 Examples
+    </div>
+
+  </div>
+
+  <!-- ===================================
+       NAVIGATION
+  =================================== -->
+
+  <nav class="nav">
+
+    <!-- =================================
+         FOUNDATIONS
+    ================================== -->
+
+    <div class="group-title">
+      Foundations
+    </div>
+
+    <a
+      href="./01-basic-text/"
+      data-title="Basic Text"
+      target="viewer"
+    >
+      01 — Basic Text
+    </a>
+
+    <a
+      href="./02-basic-styles/"
+      data-title="Basic Styles"
+      target="viewer"
+    >
+      02 — Basic Styles
+    </a>
+
+    <a
+      href="./03-basic-attributes/"
+      data-title="Basic Attributes"
+      target="viewer"
+    >
+      03 — Basic Attributes
+    </a>
+
+    <a
+      href="./04-basic-children/"
+      data-title="Basic Children"
+      target="viewer"
+    >
+      04 — Basic Children
+    </a>
+
+    <a
+      href="./05-basic-events/"
+      data-title="Basic Events"
+      target="viewer"
+    >
+      05 — Basic Events
+    </a>
+
+    <!-- =================================
+         MUTATION SEMANTICS
+    ================================== -->
+
+    <div class="group-title">
+      Mutation Semantics
+    </div>
+
+    <a
+      href="./06-mutation-consistency/"
+      data-title="Mutation Consistency"
+      target="viewer"
+    >
+      06 — Mutation Consistency
+    </a>
+
+    <a
+      href="./07-children-vs-childnodes/"
+      data-title="Children vs ChildNodes"
+      target="viewer"
+    >
+      07 — Children vs ChildNodes
+    </a>
+
+    <a
+      href="./08-fragment-support/"
+      data-title="Fragment Support"
+      target="viewer"
+    >
+      08 — Fragment Support
+    </a>
+
+    <!-- =================================
+         REACTIVE RUNTIME
+    ================================== -->
+
+    <div class="group-title">
+      Reactive Runtime
+    </div>
+
+    <a
+      href="./09-reactive-counter/"
+      data-title="Reactive Counter"
+      target="viewer"
+    >
+      09 — Reactive Counter
+    </a>
+
+    <a
+      href="./10-reactive-children/"
+      data-title="Reactive Children"
+      target="viewer"
+    >
+      10 — Reactive Children
+    </a>
+
+    <a
+      href="./11-reusable-stateful-elements/"
+      data-title="Reusable Stateful Elements"
+      target="viewer"
+    >
+      11 — Reusable Stateful Elements
+    </a>
+
+    <a
+      href="./12-cross-element-state/"
+      data-title="Cross Element State"
+      target="viewer"
+    >
+      12 — Cross Element State
+    </a>
+
+    <a
+      href="./13-existing-dom-enhancement/"
+      data-title="Existing DOM Enhancement"
+      target="viewer"
+    >
+      13 — Existing DOM Enhancement
+    </a>
+
+    <a
+      href="./14-fine-grained-signals/"
+      data-title="Fine-Grained Signals"
+      target="viewer"
+    >
+      14 — Fine-Grained Signals
+    </a>
+
+    <a
+      href="./15-existing-dom-enhancement-signals/"
+      data-title="Existing DOM Enhancement + Signals"
+      target="viewer"
+    >
+      15 — Existing DOM Enhancement + Signals
+    </a>
+
+    <!-- =================================
+         RUNTIME SEMANTICS
+    ================================== -->
+
+    <div class="group-title">
+      Runtime Semantics
+    </div>
+
+    <a
+      href="./16-state-equality-behavior/"
+      target="viewer"
+    >
+      16 — State Equality Behavior
+    </a>
+
+    <a
+      href="./17-nested-stateful-elements/"
+      target="viewer"
+    >
+      17 — Nested Stateful Elements
+    </a>
+
+    <a
+      href="./18-keyed-list-behavior/"
+      target="viewer"
+    >
+      18 — Keyed List Behavior
+    </a>
+
+    <a
+      href="./19-dom-identity-preservation/"
+      target="viewer"
+    >
+      19 — DOM Identity Preservation
+    </a>
+
+    <a
+      href="./20-reactive-feed/"
+      target="viewer"
+    >
+      20 — Reactive Feed
+    </a>
+
+    <a
+      href="./21-jsx-integration/"
+      data-title="JSX Integration"
+      target="viewer"
+    >
+      21 — JSX Integration
+    </a>
+
+  </nav>
+
+  <!-- ===================================
+       FOOTER
+  =================================== -->
+
+  <div class="sidebar-footer">
+
+    <a href="../docs/architecture/">
+      Architecture Docs →
+    </a>
+
+  </div>
+
+</aside>
+
+<!-- ===================================
+     CONTENT
+=================================== -->
+
+<main class="content">
+
+  <div
+    class="topbar"
+    id="title"
+  >
+
+    <div>
+
+      <strong>
+        DOM++ Examples
+      </strong>
+
+      <div class="topbar-subtitle">
+
+        Runtime semantics,
+        mutation flow,
+        and native DOM architecture.
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <iframe
+    id="viewer"
+    name="viewer"
+    src="./01-basic-text/"
+  ></iframe>
+
+</main>
+
+<script>
+
+  // ===================================
+  // ACTIVE LINK
+  // ===================================
+
+  const links =
+    document.querySelectorAll(
+      ".nav a"
+    );
+
+  const title =
+    document.getElementById(
+      "title"
+    );
+
+  links.forEach((link) => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        links.forEach((l) => {
+          l.classList.remove("active");
+        });
+
+        link.classList.add(
+          "active"
+        );
+
+        title.innerHTML = `
+
+          <div>
+
+            <strong>
+              ${link.dataset.title || "DOM++ Examples"}
+            </strong>
+
+            <div class="topbar-subtitle">
+
+              Runtime semantics,
+              mutation flow,
+              and native DOM architecture.
+
+            </div>
+
+          </div>
+
+        `;
+
+        // close mobile menu
+
+        const toggle =
+          document.getElementById(
+            "menu-toggle"
+          );
+
+        if (toggle) {
+          toggle.checked = false;
+        }
+
+      }
+    );
+
+  });
+
+  // default active
+
+  if (links[0]) {
+    links[0].classList.add(
+      "active"
+    );
+  }
+
+</script>
+
+</body>
+</html>

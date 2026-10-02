@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client Testing</title>
+
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link href="./global.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <main id="entry">
+    <h1>Client Testing</h1>
+
+    <p id="console-hint">
+      All test results are logged to the browser console.
+      Please open the DevTools console to view the output.
+    </p>
+
+    <button id="open-console-hint" type="button">
+      How to open browser console
+    </button>
+  </main>
+
+  <script src="./entry.js"></script>
+
+  <script>
+    document
+      .getElementById("open-console-hint")
+      .addEventListener("click", () => {
+        alert(
+          "To view test results:\n\n" +
+          "• Windows / Linux: Press F12 or Ctrl + Shift + I\n" +
+          "• macOS: Press Cmd + Option + I\n\n" +
+          "Then open the Console tab."
+        );
+      });
+  </script>
+</body>
+</html>

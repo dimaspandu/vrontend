@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A vanilla JS single page application built with vrontend.">
+  <title>vrontend</title>
+  <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+  <!-- Layout lives in the shell so it survives every client-side navigation. -->
+  <header class="layout__header">
+    <a class="layout__brand" href="/">vrontend</a>
+    <nav class="layout__nav">
+      <a class="layout__link" href="/">Tasks</a>
+    </nav>
+  </header>
+
+  <!-- The router replaces #app on every navigation. -->
+  <main class="layout__main" id="app"></main>
+
+  <script src="./index.js" type="module"></script>
+</body>
+</html>

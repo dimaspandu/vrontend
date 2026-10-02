@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Client Testing (Dev)</title>
+
+  <link rel="icon" href="./assets/favicon.ico" />
+  <link href="./global.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+  <main id="entry">
+    <h1>Client Testing (Dev)</h1>
+
+    <p id="console-hint">
+      All test results are logged to the browser console.
+      Please open the DevTools console to view the output.
+    </p>
+
+    <button id="open-console-hint" type="button">
+      How to open browser console
+    </button>
+  </main>
+
+  <script type="module" src="./entry.dev.js"></script>
+
+  <script>
+    // Minimal on-focus reload (no npm, no deps).
+    // Reloads only when any file mtime changes and the window regains focus.
+    (() => {
+      let lastMtime = 0;
+
+      async function fetchMtime() {
+        const res = await fetch("/__mtime", { cache: "no-store" });
+        const data = await res.json();
+        return data.mtimeMs || 0;
+      }
+
+      async function checkAndReload() {
+        try {
+          const current = await fetchMtime();
+          if (lastMtime && current > lastMtime) {
+            location.reload();
+            return;
+          }
+          lastMtime = current;
+        } catch {
+          // Silent fail to avoid console noise during dev.
+        }
+      }
+
+      // Initialize baseline mtime on first load.
+      checkAndReload();
+
+      window.addEventListener("focus", checkAndReload);
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          checkAndReload();
+        }
+      });
+    })();
+  </script>
+
+  <script>
+    document
+      .getElementById("open-console-hint")
+      .addEventListener("click", () => {
+        alert(
+          "To view test results:\n\n" +
+          "- Windows / Linux: Press F12 or Ctrl + Shift + I\n" +
+          "- macOS: Press Cmd + Option + I\n\n" +
+          "Then open the Console tab."
+        );
+      });
+  </script>
+</body>
+</html>

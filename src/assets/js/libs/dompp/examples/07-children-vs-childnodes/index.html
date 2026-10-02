@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../../assets/favicon.svg"
+  />
+
+  <title>
+    children vs childNodes
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+
+      line-height:
+        1.7;
+    }
+
+    .container {
+
+      max-width:
+        1100px;
+
+      margin:
+        0 auto;
+
+      padding:
+        48px 24px 96px;
+    }
+
+    h1 {
+
+      font-size:
+        48px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .description {
+
+      max-width:
+        820px;
+
+      color:
+        #666;
+
+      margin-bottom:
+        40px;
+    }
+
+    .important {
+
+      background:
+        linear-gradient(
+          135deg,
+          #eef6ff,
+          #dcecff
+        );
+
+      border:
+        1px solid #9cc4ff;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+
+      margin-bottom:
+        40px;
+
+      color:
+        #1f3f6b;
+    }
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        32px;
+
+      align-items:
+        start;
+    }
+
+    .panel {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .panel h2 {
+
+      margin-top:
+        0;
+
+      font-size:
+        22px;
+
+      margin-bottom:
+        20px;
+    }
+
+    .card {
+
+      background:
+        white;
+
+      border-radius:
+        16px;
+
+      padding:
+        24px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+
+      margin-bottom:
+        24px;
+    }
+
+    .row {
+
+      display:
+        flex;
+
+      gap:
+        12px;
+
+      flex-wrap:
+        wrap;
+
+      margin-bottom:
+        24px;
+    }
+
+    button {
+
+      border:
+        none;
+
+      background:
+        black;
+
+      color:
+        white;
+
+      padding:
+        12px 16px;
+
+      border-radius:
+        10px;
+
+      cursor:
+        pointer;
+    }
+
+    .node {
+
+      border:
+        1px solid #ddd;
+
+      border-radius:
+        10px;
+
+      padding:
+        12px;
+
+      margin-bottom:
+        12px;
+    }
+
+    .text-node {
+
+      border:
+        1px dashed #bbb;
+
+      background:
+        #fafafa;
+
+      color:
+        #666;
+
+      border-radius:
+        10px;
+
+      padding:
+        10px 12px;
+
+      margin-bottom:
+        12px;
+
+      font-style:
+        italic;
+    }
+
+    pre {
+
+      margin:
+        0;
+
+      overflow:
+        auto;
+
+      background:
+        #111;
+
+      color:
+        #f5f5f5;
+
+      padding:
+        20px;
+
+      border-radius:
+        16px;
+
+      font-size:
+        14px;
+
+      line-height:
+        1.7;
+    }
+
+    code {
+
+      font-family:
+        Consolas,
+        monospace;
+
+      padding:
+        2px 6px;
+
+      border-radius:
+        6px;
+    }
+
+    .code-keyword {
+      color: #ff7b72;
+    }
+
+    .code-method {
+      color: #79c0ff;
+    }
+
+    .code-string {
+      color: #a5d6ff;
+    }
+
+    .code-property {
+      color: #d2a8ff;
+    }
+
+    .code-variable {
+      color: #ffa657;
+    }
+
+    .notes {
+
+      margin-top:
+        24px;
+
+      color:
+        #666;
+
+      font-size:
+        14px;
+    }
+
+    @media (max-width: 900px) {
+
+      .layout {
+
+        grid-template-columns:
+          1fr;
+      }
+    }
+
+  </style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ================================= -->
+  <!-- HEADER -->
+  <!-- ================================= -->
+
+  <h1>
+    children vs childNodes
+  </h1>
+
+  <p class="description">
+
+    <code>children</code> only contains
+    element nodes.
+
+    <br /><br />
+
+    <code>childNodes</code> contains all
+    node types including:
+    text nodes,
+    whitespace,
+    comments,
+    and elements.
+
+    <br /><br />
+
+    This difference becomes important
+    when reusing or enhancing existing
+    DOM structures.
+
+  </p>
+
+  <!-- ================================= -->
+  <!-- IMPORTANT -->
+  <!-- ================================= -->
+
+  <div class="important">
+
+    <strong>
+      Important
+    </strong>
+
+    <br /><br />
+
+    DOMPP intentionally exposes both
+    <code>children</code> and
+    <code>childNodes</code>
+    during callback mutations.
+
+    <br /><br />
+
+    This allows developers to choose between:
+
+    <ul>
+
+      <li>
+        structural element-only mutation
+      </li>
+
+      <li>
+        exact DOM preservation
+      </li>
+
+    </ul>
+
+    Enhancement and hydration-like flows
+    often require access to
+    <code>childNodes</code>
+    instead of only elements.
+
+  </div>
+
+  <!-- ================================= -->
+  <!-- LAYOUT -->
+  <!-- ================================= -->
+
+  <div class="layout">
+
+    <!-- ================================= -->
+    <!-- CODE -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Reuse Pattern
+      </h2>
+
+<pre><code><span class="code-variable">tree</span>
+
+  .<span class="code-method">setChildren</span>(
+    ({ children }) => [
+
+      ...children
+
+    ]
+  );
+
+<span class="code-comment">// text nodes disappear</span>
+
+<span class="code-variable">tree</span>
+
+  .<span class="code-method">setChildren</span>(
+    ({ childNodes }) => [
+
+      ...childNodes
+
+    ]
+  );
+
+<span class="code-comment">// all nodes preserved</span></code></pre>
+
+      <div class="notes">
+
+        <strong>
+          Notes
+        </strong>
+
+        <ul>
+
+          <li>
+            <code>children</code>
+            excludes text nodes
+          </li>
+
+          <li>
+            <code>childNodes</code>
+            preserves exact DOM structure
+          </li>
+
+          <li>
+            DOMPP exposes both APIs
+            intentionally for reuse
+            and enhancement flows
+          </li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+    <!-- ================================= -->
+    <!-- LIVE PREVIEW -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Live Preview
+      </h2>
+
+      <div id="app"></div>
+
+    </section>
+
+  </div>
+
+</div>
+
+<script
+  type="module"
+  src="../../src/index.js"
+></script>
+
+<script type="module">
+
+// =====================================
+// INITIAL TREE
+// =====================================
+
+function createTree() {
+
+  return document.createElement("div")
+
+    .setAttributes({
+      class: "card"
+    })
+
+    .setChildren(
+
+      document.createElement("h1")
+
+        .setAttributes({
+          class: "node"
+        })
+
+        .setText("Header"),
+
+      document.createElement("div")
+
+        .setAttributes({
+          class: "text-node"
+        })
+
+        .setText(
+          'Text Node A'
+        ),
+
+      "Text Node A",
+
+      document.createElement("hr"),
+
+      document.createElement("div")
+
+        .setAttributes({
+          class: "text-node"
+        })
+
+        .setText(
+          'Text Node B'
+        ),
+
+      "Text Node B",
+
+      document.createElement("p")
+
+        .setAttributes({
+          class: "node"
+        })
+
+        .setText("Paragraph")
+    );
+}
+
+let tree = createTree();
+
+// =====================================
+// BUTTONS
+// =====================================
+
+const controls =
+
+  document.createElement("div")
+
+    .setAttributes({
+      class: "row"
+    })
+
+    .setChildren(
+
+      // ===============================
+      // USING children
+      // ===============================
+
+      document.createElement("button")
+
+        .setText(
+          "Reuse Using children"
+        )
+
+        .setEvents({
+          click() {
+
+            tree.setChildren(
+              ({ children }) => [
+
+                ...children
+              ]
+            );
+
+          }
+        }),
+
+      // ===============================
+      // USING childNodes
+      // ===============================
+
+      document.createElement("button")
+
+        .setText(
+          "Reuse Using childNodes"
+        )
+
+        .setEvents({
+          click() {
+
+            tree.setChildren(
+              ({ childNodes }) => [
+
+                ...childNodes
+              ]
+            );
+
+          }
+        }),
+
+      // ===============================
+      // RESET
+      // ===============================
+
+      document.createElement("button")
+
+        .setText(
+          "Reset"
+        )
+
+        .setEvents({
+          click() {
+
+            const next =
+              createTree();
+
+            tree.replaceWith(next);
+
+            tree = next;
+          }
+        })
+    );
+
+// =====================================
+// INFO
+// =====================================
+
+const info =
+
+  document.createElement("div")
+
+    .setAttributes({
+      class: "card"
+    })
+
+    .setChildren(
+
+      document.createElement("h2")
+        .setText(
+          "Expected Result"
+        ),
+
+      document.createElement("pre")
+        .setText(
+
+`Initial:
+Header
+Text Node A
+<hr>
+Text Node B
+Paragraph
+
+Reuse Using children:
+Header
+<hr>
+Paragraph
+
+(Text nodes disappear)
+
+Reuse Using childNodes:
+Header
+Text Node A
+<hr>
+Text Node B
+Paragraph
+
+(All nodes preserved)`
+
+        )
+    );
+
+// =====================================
+// APP
+// =====================================
+
+app.setChildren(
+
+  tree,
+
+  controls,
+
+  info
+);
+
+</script>
+
+</body>
+</html>

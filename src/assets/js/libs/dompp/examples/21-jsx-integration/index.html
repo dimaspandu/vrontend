@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../../assets/favicon.svg"
+  />
+
+  <title>
+    JSX Integration
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+
+      line-height:
+        1.7;
+    }
+
+    .container {
+
+      max-width:
+        1100px;
+
+      margin:
+        0 auto;
+
+      padding:
+        48px 24px 96px;
+    }
+
+    h1 {
+
+      font-size:
+        48px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .description {
+
+      max-width:
+        820px;
+
+      color:
+        #666;
+
+      margin-bottom:
+        40px;
+    }
+
+    .important {
+
+      background:
+        linear-gradient(
+          135deg,
+          #e8f4ff,
+          #d0e8ff
+        );
+
+      border:
+        1px solid #7cb8ff;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+
+      margin-bottom:
+        40px;
+
+      color:
+        #1a365d;
+    }
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        32px;
+
+      align-items:
+        start;
+    }
+
+    .panel {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .panel h2 {
+
+      margin-top:
+        0;
+
+      font-size:
+        20px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .card {
+
+      background:
+        white;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px 24px;
+
+      box-shadow:
+        0 4px 12px rgba(0,0,0,0.06);
+
+      margin-bottom:
+        24px;
+
+      border:
+        1px solid #eee;
+    }
+
+    .card:last-child {
+      margin-bottom: 0;
+    }
+
+    .card h2 {
+
+      font-size:
+        18px;
+
+      margin:
+        0 0 4px;
+    }
+
+    .card small {
+
+      display:
+        block;
+
+      color:
+        #666;
+
+      margin-bottom:
+        12px;
+    }
+
+    .card h3 {
+
+      margin:
+        12px 0 8px;
+
+      font-size:
+        16px;
+    }
+
+    .card p {
+
+      margin:
+        0 0 12px;
+
+      color:
+        #444;
+    }
+
+    .signal-count {
+
+      font-size:
+        28px;
+
+      display:
+        block;
+
+      margin:
+        8px 0;
+
+      font-variant-numeric:
+        tabular-nums;
+    }
+
+    .panel .actions,
+    .card .actions {
+
+      display:
+        flex;
+
+      gap:
+        8px;
+
+      margin-top:
+        12px;
+    }
+
+    button {
+
+      padding:
+        8px 16px;
+
+      border:
+        1px solid #222;
+
+      background:
+        #222;
+
+      color:
+        white;
+
+      border-radius:
+        8px;
+
+      cursor:
+        pointer;
+
+      font-size:
+        14px;
+    }
+
+    button.secondary {
+
+      background:
+        white;
+
+      color:
+        #222;
+    }
+
+    .note {
+
+      font-size:
+        13px;
+
+      color:
+        #666;
+
+      margin-top:
+        12px;
+    }
+
+    /* Syntax highlight (reused + extended) */
+
+    pre {
+
+      margin:
+        0;
+
+      background:
+        #0d1117;
+
+      color:
+        #c9d1d9;
+
+      padding:
+        20px;
+
+      border-radius:
+        12px;
+
+      font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+      font-size:
+        13px;
+
+      line-height:
+        1.6;
+
+      overflow:
+        auto;
+    }
+
+    .code-keyword { color: #ff7b72; }
+    .code-method { color: #79c0ff; }
+    .code-string { color: #a5d6ff; }
+    .code-property { color: #d2a8ff; }
+    .code-variable { color: #ffa657; }
+    .code-comment { color: #8b949e; font-style: italic; }
+    .code-tag { color: #7ee787; }
+    .code-jsx-brace { color: #c9d1d9; }
+
+    .notes {
+
+      margin-top:
+        24px;
+
+      color:
+        #666;
+
+      font-size:
+        14px;
+    }
+
+    @media (max-width: 900px) {
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>
+      JSX Integration
+    </h1>
+
+    <p class="description">
+      Use familiar JSX syntax with DOM++ by providing a tiny custom factory function.
+      This example runs entirely in the browser using Babel Standalone (no build step).
+    </p>
+
+    <div class="important">
+
+      <strong>How it works</strong>
+
+      <br /><br />
+
+      A <code>/** @jsx d */</code> pragma tells Babel to transform
+      <code>&lt;div&gt;</code> into <code>d("div", props, ...children)</code>.
+
+      <br /><br />
+
+      The <code>d</code> factory creates real DOM nodes and forwards
+      special props (<code>style</code>, <code>className</code>, <code>on</code>)
+      to the corresponding DOM++ setters.
+
+      <br /><br />
+
+      All DOM++ reactive features (setState, setFineGrained + signals, reactive setChildren) work normally.
+
+      <br /><br />
+
+      <strong>For production:</strong> use a bundler (Vite, Parcel, esbuild, etc.)
+      and configure the JSX transform to use your factory instead of React.createElement.
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- LIVE DEMO -->
+    <!-- ================================= -->
+
+    <h2>
+      Live Demo
+    </h2>
+
+    <div id="app"></div>
+
+    <!-- ================================= -->
+    <!-- JSX SOURCE -->
+    <!-- ================================= -->
+
+    <h2 style="margin-top: 48px;">
+      JSX Source
+    </h2>
+
+    <p class="notes">
+      This is the exact source that gets transformed by Babel and executed.
+      The pragma, factory, and all four demo patterns are shown below.
+    </p>
+
+<pre><code><span class="code-comment">/** @jsx d */</span>
+
+<span class="code-keyword">const</span> <span class="code-variable">app</span> =
+  document.getElementById(<span class="code-string">"app"</span>);
+
+<span class="code-comment">// JSX factory: d(tag, props, ...children)</span>
+<span class="code-keyword">function</span> <span class="code-variable">d</span>(<span class="code-variable">tag</span>, <span class="code-variable">props</span>, ...<span class="code-variable">children</span>) {
+  <span class="code-keyword">const</span> <span class="code-variable">svgTags</span> = <span class="code-keyword">new</span> <span class="code-variable">Set</span>([
+    <span class="code-string">"svg"</span>, <span class="code-string">"circle"</span>, <span class="code-string">"path"</span>, <span class="code-string">"rect"</span>,
+    <span class="code-string">"line"</span>, <span class="code-string">"polyline"</span>, <span class="code-string">"polygon"</span>, <span class="code-string">"ellipse"</span>,
+    <span class="code-string">"g"</span>, <span class="code-string">"defs"</span>, <span class="code-string">"use"</span>, <span class="code-string">"symbol"</span>,
+    <span class="code-string">"text"</span>, <span class="code-string">"tspan"</span>, <span class="code-string">"textPath"</span>,
+    <span class="code-string">"image"</span>, <span class="code-string">"foreignObject"</span>,
+    <span class="code-string">"mask"</span>, <span class="code-string">"clipPath"</span>, <span class="code-string">"pattern"</span>,
+    <span class="code-string">"linearGradient"</span>, <span class="code-string">"radialGradient"</span>, <span class="code-string">"stop"</span>,
+    <span class="code-string">"filter"</span>, <span class="code-string">"feGaussianBlur"</span>, <span class="code-string">"feColorMatrix"</span>,
+    <span class="code-string">"animate"</span>, <span class="code-string">"animateTransform"</span>, <span class="code-string">"animateMotion"</span>,
+    <span class="code-string">"marker"</span>, <span class="code-string">"view"</span>, <span class="code-string">"switch"</span>,
+    <span class="code-string">"a"</span>, <span class="code-string">"script"</span>, <span class="code-string">"style"</span>, <span class="code-string">"title"</span>, <span class="code-string">"desc"</span>, <span class="code-string">"metadata"</span>
+  ]);
+
+  <span class="code-keyword">let</span> <span class="code-variable">node</span>;
+  <span class="code-keyword">if</span> (<span class="code-variable">tag</span> === <span class="code-string">"fragment"</span> || <span class="code-variable">tag</span> === <span class="code-string">"Fragment"</span>) {
+    <span class="code-variable">node</span> = document.createDocumentFragment();
+  } <span class="code-keyword">else if</span> (<span class="code-variable">svgTags</span>.has(<span class="code-variable">tag</span>)) {
+    <span class="code-variable">node</span> = document.createElementNS(<span class="code-string">"http://www.w3.org/2000/svg"</span>, <span class="code-variable">tag</span>);
+  } <span class="code-keyword">else</span> {
+    <span class="code-variable">node</span> = document.createElement(<span class="code-variable">tag</span>);
+  }
+
+  <span class="code-keyword">if</span> (<span class="code-variable">props</span>) {
+    <span class="code-keyword">const</span> { <span class="code-property">style</span>, <span class="code-property">className</span>, <span class="code-property">class</span>: <span class="code-variable">classAttr</span>, <span class="code-property">on</span>, ...<span class="code-variable">attrs</span> } = <span class="code-variable">props</span>;
+
+    <span class="code-keyword">if</span> (<span class="code-variable">className</span> || <span class="code-variable">classAttr</span>) {
+      node.<span class="code-method">setAttributes</span>({ <span class="code-property">class</span>: <span class="code-variable">className</span> || <span class="code-variable">classAttr</span> });
+    }
+
+    <span class="code-keyword">if</span> (<span class="code-variable">style</span>) {
+      node.<span class="code-method">setStyles</span>(<span class="code-variable">style</span>);
+    }
+
+    <span class="code-keyword">if</span> (<span class="code-variable">on</span>) {
+      node.<span class="code-method">setEvents</span>(<span class="code-variable">on</span>);
+    }
+
+    <span class="code-keyword">if</span> (Object.keys(<span class="code-variable">attrs</span>).length) {
+      node.<span class="code-method">setAttributes</span>(<span class="code-variable">attrs</span>);
+    }
+  }
+
+  <span class="code-keyword">if</span> (<span class="code-variable">children</span>.length) {
+    node.<span class="code-method">setChildren</span>(...<span class="code-variable">children</span>.flat());
+  }
+
+  <span class="code-keyword">return</span> <span class="code-variable">node</span>;
+
+
+}
+<span class="code-keyword">function</span> <span class="code-variable">card</span>(<span class="code-variable">title</span>, <span class="code-variable">description</span>, <span class="code-variable">content</span>) {
+  <span class="code-keyword">return</span> (
+    &lt;<span class="code-tag">section</span> <span class="code-property">className</span>=<span class="code-string">"card"</span>&gt;
+      &lt;<span class="code-tag">h2</span>&gt;{<span class="code-variable">title</span>}&lt;/<span class="code-tag">h2</span>&gt;
+      &lt;<span class="code-tag">small</span>&gt;{<span class="code-variable">description</span>}&lt;/<span class="code-tag">small</span>&gt;
+      {<span class="code-variable">content</span>}
+    &lt;/<span class="code-tag">section</span>&gt;
+  );
+}
+
+<span class="code-keyword">function</span> <span class="code-variable">demoBasicUsage</span>() {
+  <span class="code-keyword">return</span> card(
+    <span class="code-string">"Basic Usage"</span>,
+    <span class="code-string">"DOM++ extends real DOM nodes with chainable helpers."</span>,
+    (
+      &lt;<span class="code-tag">div</span>&gt;
+        &lt;<span class="code-tag">h3</span>&gt;Hello DOM++&lt;/<span class="code-tag">h3</span>&gt;
+        &lt;<span class="code-tag">p</span>&gt;This is a DOM++ element created via JSX.&lt;/<span class="code-tag">p</span>&gt;
+      &lt;/<span class="code-tag">div</span>&gt;
+    )
+  );
+}
+
+<span class="code-keyword">function</span> <span class="code-variable">demoStatefulPanel</span>() {
+  <span class="code-keyword">const</span> <span class="code-variable">panel</span> = &lt;<span class="code-tag">section</span> <span class="code-property">className</span>=<span class="code-string">"panel"</span> /&gt;;
+  <span class="code-variable">panel</span>
+    .<span class="code-method">setState</span>({ <span class="code-property">total</span>: 0 })
+    .<span class="code-method">setChildren</span>(({ <span class="code-property">state</span>, <span class="code-property">setState</span> }) =&gt; [
+      &lt;<span class="code-tag">h3</span>&gt;{`Total: ${<span class="code-variable">state</span>.total}`}&lt;/<span class="code-tag">h3</span>&gt;,
+      &lt;<span class="code-tag">button</span> <span class="code-property">on</span>={{ <span class="code-property">click</span>: () =&gt; <span class="code-variable">setState</span>(({ <span class="code-property">state</span> }) =&gt; { <span class="code-variable">state</span>.total += 10000; }) }}&gt;
+        Donate 10k
+      &lt;/<span class="code-tag">button</span>&gt;
+    ]);
+
+  <span class="code-keyword">return</span> card(
+    <span class="code-string">"Stateful Panel"</span>,
+    <span class="code-string">"State lives on the element; setChildren re-runs when state changes."</span>,
+    <span class="code-variable">panel</span>
+  );
+}
+
+<span class="code-keyword">function</span> <span class="code-variable">demoCrossElement</span>() {
+  <span class="code-keyword">const</span> <span class="code-variable">summary</span> = &lt;<span class="code-tag">div</span> /&gt;;
+  <span class="code-variable">summary</span>
+    .<span class="code-method">setState</span>({ <span class="code-property">total</span>: 0 })
+    .<span class="code-method">setChildren</span>(({ <span class="code-property">state</span> }) =&gt; [
+      &lt;<span class="code-tag">strong</span>&gt;{`Total: ${<span class="code-variable">state</span>.total}`}&lt;/<span class="code-tag">strong</span>&gt;
+    ]);
+
+  <span class="code-keyword">return</span> card(
+    <span class="code-string">"Cross-Element Updates"</span>,
+    <span class="code-string">"Buttons update another element's state via its setState method."</span>,
+    (
+      &lt;<span class="code-tag">div</span>&gt;
+        {<span class="code-variable">summary</span>}
+        &lt;<span class="code-tag">div</span> <span class="code-property">className</span>=<span class="code-string">"actions"</span>&gt;
+          &lt;<span class="code-tag">button</span> <span class="code-property">on</span>={{ <span class="code-property">click</span>: () =&gt; {
+            <span class="code-variable">summary</span>.<span class="code-method">setState</span>(({ <span class="code-property">state</span> }) =&gt; { <span class="code-variable">state</span>.total += 10000; });
+          } }}&gt;Donate 10k&lt;/<span class="code-tag">button</span>&gt;
+          &lt;<span class="code-tag">button</span> <span class="code-property">className</span>=<span class="code-string">"secondary"</span> <span class="code-property">on</span>={{ <span class="code-property">click</span>: () =&gt; {
+            <span class="code-variable">summary</span>.<span class="code-method">setState</span>(({ <span class="code-property">state</span> }) =&gt; { <span class="code-variable">state</span>.total += 25000; });
+          } }}&gt;Donate 25k&lt;/<span class="code-tag">button</span>&gt;
+        &lt;/<span class="code-tag">div</span>&gt;
+      &lt;/<span class="code-tag">div</span>&gt;
+    )
+  );
+}
+
+<span class="code-keyword">function</span> <span class="code-variable">demoFineGrained</span>() {
+  <span class="code-keyword">const</span> [<span class="code-variable">count</span>, <span class="code-variable">setCount</span>] =
+    document.<span class="code-method">createSignal</span>(0);
+
+  <span class="code-keyword">const</span> <span class="code-variable">display</span> =
+    &lt;<span class="code-tag">strong</span> <span class="code-property">className</span>=<span class="code-string">"signal-count"</span> /&gt;;
+
+  <span class="code-variable">display</span>
+    .<span class="code-method">setFineGrained</span>()
+    .<span class="code-method">setText</span>(() =&gt; `Signal: ${<span class="code-variable">count</span>()}`);
+
+  <span class="code-keyword">return</span> card(
+    <span class="code-string">"Fine-Grained Signals"</span>,
+    <span class="code-string">"JSX node + setFineGrained + signal-driven setText (no setState)."</span>,
+    (
+      &lt;<span class="code-tag">div</span>&gt;
+        {<span class="code-variable">display</span>}
+        &lt;<span class="code-tag">div</span> <span class="code-property">className</span>=<span class="code-string">"actions"</span>&gt;
+          &lt;<span class="code-tag">button</span> <span class="code-property">on</span>={{ <span class="code-property">click</span>: () =&gt; <span class="code-variable">setCount</span>( <span class="code-variable">count</span>() + 1 ) }}&gt;+1&lt;/<span class="code-tag">button</span>&gt;
+          &lt;<span class="code-tag">button</span> <span class="code-property">className</span>=<span class="code-string">"secondary"</span> <span class="code-property">on</span>={{ <span class="code-property">click</span>: () =&gt; <span class="code-variable">setCount</span>(0) }}&gt;Reset&lt;/<span class="code-tag">button</span>&gt;
+        &lt;/<span class="code-tag">div</span>&gt;
+      &lt;/<span class="code-tag">div</span>&gt;
+    )
+  );
+}
+
+<span class="code-variable">app</span>.<span class="code-method">setChildren</span>(
+  <span class="code-variable">demoBasicUsage</span>(),
+  <span class="code-variable">demoStatefulPanel</span>(),
+  <span class="code-variable">demoCrossElement</span>(),
+  <span class="code-variable">demoFineGrained</span>()
+);
+ </code></pre>
+
+    <div class="notes">
+      The runtime cost of Babel Standalone is only for this demo.
+      In real apps the transform happens at build time and produces plain JS.
+    </div>
+
+  </div>
+
+  <!-- ================================= -->
+  <!-- SCRIPTS -->
+  <!-- ================================= -->
+
+  <script
+    type="module"
+    src="../../src/index.js"
+  ></script>
+  <script defer src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel" data-presets="env,react">
+/** @jsx d */
+
+const app = document.getElementById("app");
+
+// JSX factory: d(tag, props, ...children)
+function d(tag, props, ...children) {
+  const svgTags = new Set([
+    "svg", "circle", "path", "rect",
+    "line", "polyline", "polygon", "ellipse",
+    "g", "defs", "use", "symbol",
+    "text", "tspan", "textPath",
+    "image", "foreignObject",
+    "mask", "clipPath", "pattern",
+    "linearGradient", "radialGradient", "stop",
+    "filter", "feGaussianBlur", "feColorMatrix",
+    "animate", "animateTransform", "animateMotion",
+    "marker", "view", "switch",
+    "a", "script", "style", "title", "desc", "metadata"
+  ]);
+
+  let node;
+  if (tag === "fragment" || tag === "Fragment") {
+    node = document.createDocumentFragment();
+  } else if (svgTags.has(tag)) {
+    node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  } else {
+    node = document.createElement(tag);
+  }
+
+  if (props) {
+    const { style, className, class: classAttr, on, ...attrs } = props;
+
+    if (className || classAttr) {
+      node.setAttributes({ class: className || classAttr });
+    }
+
+    if (style) {
+      node.setStyles(style);
+    }
+
+    if (on) {
+      node.setEvents(on);
+    }
+
+    if (Object.keys(attrs).length) {
+      node.setAttributes(attrs);
+    }
+  }
+
+  if (children.length) {
+    node.setChildren(...children.flat());
+  }
+
+  return node;
+}
+
+function card(title, description, content) {
+  return (
+    <section className="card">
+      <h2>{title}</h2>
+      <small>{description}</small>
+      {content}
+    </section>
+  );
+}
+
+function demoBasicUsage() {
+  return card(
+    "Basic Usage",
+    "DOM++ extends real DOM nodes with chainable helpers.",
+    (
+      <div>
+        <h3>Hello DOM++</h3>
+        <p>This is a DOM++ element created via JSX.</p>
+      </div>
+    )
+  );
+}
+
+function demoStatefulPanel() {
+  const panel = <section className="panel" />;
+  panel
+    .setState({ total: 0 })
+    .setChildren(({ state, setState }) => [
+      <h3>{`Total: ${state.total}`}</h3>,
+      <button on={{
+        click: () => setState(({ state }) => {
+          state.total += 10000;
+        })
+      }}>Donate 10k</button>
+    ]);
+
+  return card(
+    "Stateful Panel",
+    "State lives on the element; setChildren re-runs when state changes.",
+    panel
+  );
+}
+
+function demoCrossElement() {
+  const summary = <div />;
+  summary
+    .setState({ total: 0 })
+    .setChildren(({ state }) => [
+      <strong>{`Total: ${state.total}`}</strong>
+    ]);
+
+  return card(
+    "Cross-Element Updates",
+    "Buttons update another element's state via its setState method.",
+    (
+      <div>
+        {summary}
+        <div className="actions">
+          <button on={{
+            click: () => {
+              summary.setState(({ state }) => {
+                state.total += 10000;
+              });
+            }
+          }}>Donate 10k</button>
+          <button className="secondary" on={{
+            click: () => {
+              summary.setState(({ state }) => {
+                state.total += 25000;
+              });
+            }
+          }}>Donate 25k</button>
+        </div>
+      </div>
+    )
+  );
+}
+
+function demoFineGrained() {
+  const [count, setCount] =
+    document.createSignal(0);
+
+  const display =
+    <strong className="signal-count" />;
+
+  display
+    .setFineGrained()
+    .setText(() => `Signal: ${count()}`);
+
+  return card(
+    "Fine-Grained Signals",
+    "JSX node + setFineGrained + signal-driven setText (no setState).",
+    (
+      <div>
+        {display}
+        <div className="actions">
+          <button on={{
+            click: () => setCount( count() + 1 )
+          }}>+1</button>
+          <button className="secondary" on={{
+            click: () => setCount(0)
+          }}>Reset</button>
+        </div>
+      </div>
+    )
+  );
+}
+
+app.setChildren(
+  demoBasicUsage(),
+  demoStatefulPanel(),
+  demoCrossElement(),
+  demoFineGrained()
+);
+  </script>
+
+</body>
+</html>

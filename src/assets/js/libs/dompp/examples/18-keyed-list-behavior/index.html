@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../../assets/favicon.svg"
+  />
+
+  <title>
+    Keyed List Behavior
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+
+      line-height:
+        1.7;
+    }
+
+    .container {
+
+      max-width:
+        1200px;
+
+      margin:
+        0 auto;
+
+      padding:
+        48px 24px 96px;
+    }
+
+    h1 {
+
+      font-size:
+        48px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .description {
+
+      max-width:
+        900px;
+
+      color:
+        #666;
+
+      margin-bottom:
+        40px;
+    }
+
+    .important {
+
+      background:
+        linear-gradient(
+          135deg,
+          #fff8db,
+          #fff1a8
+        );
+
+      border:
+        1px solid #f0d000;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+
+      margin-bottom:
+        40px;
+
+      color:
+        #5c4b00;
+    }
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        32px;
+
+      align-items:
+        start;
+    }
+
+    .panel {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .panel h2 {
+
+      margin-top:
+        0;
+    }
+
+    .controls {
+
+      display:
+        flex;
+
+      gap:
+        12px;
+
+      flex-wrap:
+        wrap;
+
+      margin-bottom:
+        28px;
+    }
+
+    button {
+
+      border:
+        none;
+
+      background:
+        black;
+
+      color:
+        white;
+
+      padding:
+        12px 16px;
+
+      border-radius:
+        10px;
+
+      cursor:
+        pointer;
+    }
+
+    .list {
+
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      gap:
+        16px;
+    }
+
+    .item {
+
+      background:
+        #f0f0f0;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+    }
+
+    .item h3 {
+
+      margin:
+        0 0 12px;
+    }
+
+    .counter {
+
+      font-size:
+        36px;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        16px;
+    }
+
+    .row {
+
+      display:
+        flex;
+
+      gap:
+        12px;
+    }
+
+    pre {
+
+      margin:
+        0;
+
+      overflow:
+        auto;
+
+      background:
+        #111;
+
+      color:
+        #f5f5f5;
+
+      padding:
+        20px;
+
+      border-radius:
+        16px;
+
+      font-size:
+        14px;
+
+      line-height:
+        1.7;
+    }
+
+    code {
+
+      font-family:
+        Consolas,
+        monospace;
+    }
+
+    .code-keyword {
+      color: #ff7b72;
+    }
+
+    .code-method {
+      color: #79c0ff;
+    }
+
+    .code-string {
+      color: #a5d6ff;
+    }
+
+    .code-property {
+      color: #d2a8ff;
+    }
+
+    .code-variable {
+      color: #ffa657;
+    }
+
+    .code-comment {
+      color: #8b949e;
+      font-style: italic;
+    }
+
+    .notes {
+
+      margin-top:
+        24px;
+
+      color:
+        #666;
+
+      font-size:
+        14px;
+    }
+
+    @media (max-width: 900px) {
+
+      .layout {
+
+        grid-template-columns:
+          1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ================================= -->
+  <!-- HEADER -->
+  <!-- ================================= -->
+
+  <h1>
+    Keyed List Behavior
+  </h1>
+
+  <p class="description">
+
+    DOM++ does not include a virtual DOM
+    reconciliation engine or automatic
+    keyed diffing system.
+
+    <br /><br />
+
+    Instead,
+    list identity is preserved by reusing
+    the same DOM node references directly.
+
+  </p>
+
+  <!-- ================================= -->
+  <!-- IMPORTANT -->
+  <!-- ================================= -->
+
+  <div class="important">
+
+    <strong>
+      Important
+    </strong>
+
+    <br /><br />
+
+    DOM++ preserves stateful list items
+    by reusing existing DOM node references.
+
+    <br /><br />
+
+    There is no hidden reconciliation pass.
+
+    <br /><br />
+
+    Identity preservation depends entirely on:
+    <ul>
+
+      <li>
+        whether the same DOM node reference
+        is reused
+      </li>
+
+      <li>
+        whether nodes are recreated
+      </li>
+
+      <li>
+        whether stateful nodes survive
+        list mutations
+      </li>
+
+    </ul>
+
+  </div>
+
+  <!-- ================================= -->
+  <!-- LAYOUT -->
+  <!-- ================================= -->
+
+  <div class="layout">
+
+    <!-- ================================= -->
+    <!-- CODE -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Identity Preservation Pattern
+      </h2>
+
+<pre><code><span class="code-comment">// =====================================</span>
+<span class="code-comment">// STATEFUL ITEM</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">function</span> <span class="code-variable">createItem</span>(label) {
+  <span class="code-keyword">return</span> document
+    .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+    .<span class="code-method">setAttributes</span>({
+      <span class="code-property">class</span>: <span class="code-string">"item"</span>
+    })
+    .<span class="code-method">setState</span>({
+      <span class="code-property">count</span>: 0
+    })
+    .<span class="code-method">setChildren</span>(({
+      state,
+      setState
+    }) => [
+      <span class="code-comment">// ===============================</span>
+      <span class="code-comment">// TITLE</span>
+      <span class="code-comment">// ===============================</span>
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"h3"</span>)
+        .<span class="code-method">setText</span>(
+          <span class="code-string">`Item ${label}`</span>
+        ),
+
+      <span class="code-comment">// ===============================</span>
+      <span class="code-comment">// COUNT</span>
+      <span class="code-comment">// ===============================</span>
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+        .<span class="code-method">setAttributes</span>({
+          <span class="code-property">class</span>: <span class="code-string">"counter"</span>
+        })
+        .<span class="code-method">setText</span>(
+          <span class="code-string">`${state.count}`</span>
+        ),
+
+      <span class="code-comment">// ===============================</span>
+      <span class="code-comment">// BUTTON</span>
+      <span class="code-comment">// ===============================</span>
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"button"</span>)
+        .<span class="code-method">setText</span>(
+          <span class="code-string">"Increment"</span>
+        )
+        .<span class="code-method">setEvents</span>({
+          <span class="code-property">click</span>() {
+            setState({
+              <span class="code-property">count</span>:
+                state.count + 1
+            });
+          }
+        })
+    ]);
+}
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// INITIAL ITEMS</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">let</span> <span class="code-variable">items</span> = [
+  createItem(<span class="code-string">"A"</span>),
+  createItem(<span class="code-string">"B"</span>),
+  createItem(<span class="code-string">"C"</span>)
+];
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// LIST ROOT</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">const</span> <span class="code-variable">list</span> =
+  document
+    .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+    .<span class="code-method">setAttributes</span>({
+      <span class="code-property">class</span>: <span class="code-string">"list"</span>
+    })
+    .<span class="code-method">setChildren</span>(
+      ...items
+    );
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// RENDER</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">function</span> <span class="code-variable">render</span>() {
+  list.<span class="code-method">setChildren</span>(
+    ...items
+  );
+}
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// REVERSE</span>
+<span class="code-comment">// =====================================</span>
+reverse.<span class="code-method">setEvents</span>({
+  <span class="code-property">click</span>() {
+    items.reverse();
+    render();
+  }
+});
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// SHUFFLE</span>
+<span class="code-comment">// =====================================</span>
+shuffle.<span class="code-method">setEvents</span>({
+  <span class="code-property">click</span>() {
+    items.sort(() => {
+      <span class="code-keyword">return</span> Math.random() - 0.5;
+    });
+    render();
+  }
+});
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// REPLACE</span>
+<span class="code-comment">// =====================================</span>
+replace.<span class="code-method">setEvents</span>({
+  <span class="code-property">click</span>() {
+    items = [
+      createItem(<span class="code-string">"A"</span>),
+      createItem(<span class="code-string">"B"</span>),
+      createItem(<span class="code-string">"C"</span>)
+    ];
+    render();
+  }
+});
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// APP</span>
+<span class="code-comment">// =====================================</span>
+app.<span class="code-method">setChildren</span>(
+  list
+);</code></pre>
+
+      <div class="notes">
+
+        <strong>
+          Notes
+        </strong>
+
+        <ul>
+
+          <li>
+            DOM node references act as identity
+          </li>
+
+          <li>
+            local state remains attached
+            to reused nodes
+          </li>
+
+          <li>
+            reordering preserved nodes
+            preserves state
+          </li>
+
+          <li>
+            recreating nodes resets state
+          </li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+    <!-- ================================= -->
+    <!-- LIVE -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Live Preview
+      </h2>
+
+      <div class="controls">
+
+        <button id="reverse">
+          Reverse Order
+        </button>
+
+        <button id="shuffle">
+          Shuffle
+        </button>
+
+        <button id="replace">
+          Replace All
+        </button>
+
+      </div>
+
+      <div id="app"></div>
+
+    </section>
+
+  </div>
+
+</div>
+
+<script
+  type="module"
+  src="../../src/index.js"
+></script>
+
+<script type="module">
+
+// =====================================
+// STATEFUL ITEM
+// =====================================
+
+function createItem(label) {
+
+  return document
+
+    .createElement("div")
+
+    .setAttributes({
+      class: "item"
+    })
+
+    .setState({
+      count: 0
+    })
+
+    .setChildren(({
+      state,
+      setState
+    }) => [
+
+      // ===============================
+      // TITLE
+      // ===============================
+
+      document
+
+        .createElement("h3")
+
+        .setText(
+          `Item ${label}`
+        ),
+
+      // ===============================
+      // COUNT
+      // ===============================
+
+      document
+
+        .createElement("div")
+
+        .setAttributes({
+          class: "counter"
+        })
+
+        .setText(
+          `${state.count}`
+        ),
+
+      // ===============================
+      // BUTTON
+      // ===============================
+
+      document
+
+        .createElement("button")
+
+        .setText(
+          "Increment"
+        )
+
+        .setEvents({
+          click() {
+
+            setState({
+              count:
+                state.count + 1
+            });
+
+          }
+        })
+    ]);
+}
+
+// =====================================
+// INITIAL ITEMS
+// =====================================
+
+let items = [
+
+  createItem("A"),
+
+  createItem("B"),
+
+  createItem("C")
+
+];
+
+// =====================================
+// LIST ROOT
+// =====================================
+
+const list =
+
+  document
+
+    .createElement("div")
+
+    .setAttributes({
+      class: "list"
+    })
+
+    .setChildren(
+      ...items
+    );
+
+// =====================================
+// RENDER
+// =====================================
+
+function render() {
+
+  list.setChildren(
+    ...items
+  );
+
+}
+
+// =====================================
+// REVERSE
+// =====================================
+
+reverse.setEvents({
+  click() {
+
+    items.reverse();
+
+    render();
+
+  }
+});
+
+// =====================================
+// SHUFFLE
+// =====================================
+
+shuffle.setEvents({
+  click() {
+
+    items.sort(() => {
+
+      return Math.random() - 0.5;
+
+    });
+
+    render();
+
+  }
+});
+
+// =====================================
+// REPLACE
+// =====================================
+
+replace.setEvents({
+  click() {
+
+    items = [
+
+      createItem("A"),
+
+      createItem("B"),
+
+      createItem("C")
+
+    ];
+
+    render();
+
+  }
+});
+
+// =====================================
+// APP
+// =====================================
+
+app.setChildren(
+  list
+);
+
+</script>
+
+</body>
+</html>

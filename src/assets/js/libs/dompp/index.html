@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <!-- ================================= -->
+  <!-- TITLE -->
+  <!-- ================================= -->
+
+  <title>
+    DOMPP (DOM++)
+  </title>
+
+  <!-- ================================= -->
+  <!-- FAVICON -->
+  <!-- ================================= -->
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="./assets/favicon.svg"
+  />
+
+  <!-- ================================= -->
+  <!-- PRIMARY META -->
+  <!-- ================================= -->
+
+  <meta
+    name="title"
+    content="DOMPP (DOM++)"
+  />
+
+  <meta
+    name="description"
+    content="A browser-native mutation runtime exploring deterministic DOM updates, optional reactivity, fine-grained signals, and progressive enhancement without virtual DOM reconciliation."
+  />
+
+  <meta
+    name="keywords"
+    content="
+      DOM,
+      JavaScript,
+      runtime,
+      reactivity,
+      signals,
+      enhancement,
+      progressive enhancement,
+      browser runtime,
+      mutation runtime,
+      fine-grained reactivity
+    "
+  />
+
+  <meta
+    name="author"
+    content="DOMPP Team"
+  />
+
+  <meta
+    name="theme-color"
+    content="#111111"
+  />
+
+  <!-- ================================= -->
+  <!-- CANONICAL -->
+  <!-- ================================= -->
+
+  <link
+    rel="canonical"
+    href="https://dimaspandu.github.io/dompp/"
+  />
+
+  <!-- ================================= -->
+  <!-- OPEN GRAPH -->
+  <!-- ================================= -->
+
+  <meta
+    property="og:type"
+    content="website"
+  />
+
+  <meta
+    property="og:url"
+    content="https://dimaspandu.github.io/dompp/"
+  />
+
+  <meta
+    property="og:title"
+    content="DOMPP (DOM++)"
+  />
+
+  <meta
+    property="og:description"
+    content="A browser-native mutation runtime exploring deterministic DOM updates, optional reactivity, fine-grained signals, and progressive enhancement without virtual DOM reconciliation."
+  />
+
+  <meta
+    property="og:image"
+    content="https://dimaspandu.github.io/dompp/assets/featured-image.png"
+  />
+
+  <meta
+    property="og:site_name"
+    content="DOMPP"
+  />
+
+  <!-- ================================= -->
+  <!-- TWITTER -->
+  <!-- ================================= -->
+
+  <meta
+    property="twitter:card"
+    content="summary_large_image"
+  />
+
+  <meta
+    property="twitter:url"
+    content="https://dimaspandu.github.io/dompp/"
+  />
+
+  <meta
+    property="twitter:title"
+    content="DOMPP (DOM++)"
+  />
+
+  <meta
+    property="twitter:description"
+    content="A browser-native mutation runtime exploring deterministic DOM updates, optional reactivity, fine-grained signals, and progressive enhancement without virtual DOM reconciliation."
+  />
+
+  <meta
+    property="twitter:image"
+    content="https://dimaspandu.github.io/dompp/assets/featured-image.png"
+  />
+
+  <!-- ================================= -->
+  <!-- OPTIONAL -->
+  <!-- ================================= -->
+
+  <meta
+    name="robots"
+    content="index, follow"
+  />
+
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="IE=edge"
+  />
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #111;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* ===================================
+       HERO
+    =================================== */
+
+    .hero {
+
+      padding:
+        96px 32px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #111,
+          #222
+        );
+
+      color:
+        white;
+    }
+
+    .hero-inner {
+
+      max-width:
+        1100px;
+
+      margin:
+        0 auto;
+    }
+
+    .badge {
+
+      display:
+        inline-block;
+
+      background:
+        rgba(255,255,255,0.12);
+
+      border:
+        1px solid rgba(255,255,255,0.18);
+
+      padding:
+        8px 14px;
+
+      border-radius:
+        999px;
+
+      font-size:
+        14px;
+
+      margin-bottom:
+        24px;
+    }
+
+    h1 {
+
+      font-size:
+        clamp(48px, 8vw, 96px);
+
+      margin:
+        0 0 24px 0;
+
+      line-height:
+        0.95;
+    }
+
+    .hero p {
+
+      max-width:
+        820px;
+
+      font-size:
+        20px;
+
+      line-height:
+        1.8;
+
+      color:
+        rgba(255,255,255,0.82);
+    }
+
+    .buttons {
+
+      display:
+        flex;
+
+      gap:
+        16px;
+
+      flex-wrap:
+        wrap;
+
+      margin-top:
+        40px;
+    }
+
+    .button {
+
+      padding:
+        14px 20px;
+
+      border-radius:
+        12px;
+
+      font-weight:
+        600;
+
+      transition:
+        transform 0.15s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .button-primary {
+
+      background:
+        white;
+
+      color:
+        black;
+    }
+
+    .button-secondary {
+
+      border:
+        1px solid rgba(255,255,255,0.18);
+
+      color:
+        white;
+    }
+
+    /* ===================================
+       SECTIONS
+    =================================== */
+
+    .section {
+
+      max-width:
+        1100px;
+
+      margin:
+        0 auto;
+
+      padding:
+        96px 32px;
+    }
+
+    .section-title {
+
+      font-size:
+        42px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .section-description {
+
+      color:
+        #666;
+
+      line-height:
+        1.8;
+
+      margin-bottom:
+        48px;
+
+      max-width:
+        820px;
+    }
+
+    .grid {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(260px, 1fr));
+
+      gap:
+        24px;
+    }
+
+    .card {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .card h3 {
+
+      margin-top:
+        0;
+
+      font-size:
+        22px;
+    }
+
+    .card p {
+
+      color:
+        #666;
+
+      line-height:
+        1.7;
+    }
+
+    /* ===================================
+       ARCHITECTURE
+    =================================== */
+
+    .architecture-preview {
+
+      width:
+        100%;
+
+      border-radius:
+        20px;
+
+      box-shadow:
+        0 10px 32px rgba(0,0,0,0.08);
+    }
+
+    /* ===================================
+       EXAMPLES
+    =================================== */
+
+    .examples-group {
+
+      margin-bottom:
+        56px;
+    }
+
+    .examples-group h3 {
+
+      font-size:
+        28px;
+
+      margin-bottom:
+        20px;
+    }
+
+    .examples {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(320px, 1fr));
+
+      gap:
+        20px;
+    }
+
+    .example-link {
+
+      background:
+        white;
+
+      padding:
+        20px;
+
+      border-radius:
+        16px;
+
+      box-shadow:
+        0 6px 18px rgba(0,0,0,0.05);
+
+      transition:
+        transform 0.15s ease;
+    }
+
+    .example-link:hover {
+      transform: translateY(-2px);
+    }
+
+    .example-link strong {
+
+      display:
+        block;
+
+      margin-bottom:
+        8px;
+    }
+
+    /* ===================================
+       FOOTER
+    =================================== */
+
+    footer {
+
+      padding:
+        64px 32px;
+
+      text-align:
+        center;
+
+      color:
+        #777;
+    }
+
+    code {
+
+      background:
+        #eee;
+
+      padding:
+        2px 8px;
+
+      border-radius:
+        8px;
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <!-- ================================= -->
+  <!-- HERO -->
+  <!-- ================================= -->
+
+  <section class="hero">
+
+    <div class="hero-inner">
+
+      <div class="badge">
+        EXPERIMENTAL RUNTIME PROPOSAL
+      </div>
+
+      <h1>
+        DOM++
+      </h1>
+
+      <p>
+
+        A browser-native mutation runtime
+        exploring deterministic DOM updates,
+        optional reactivity,
+        fine-grained signals,
+        and progressive enhancement
+        without virtual DOM reconciliation.
+
+      </p>
+
+      <div class="buttons">
+
+        <a
+          href="./examples/"
+          class="
+            button
+            button-primary
+          "
+        >
+          Explore Examples
+        </a>
+
+        <a
+          href="./docs/architecture/"
+          class="
+            button
+            button-secondary
+          "
+        >
+          Architecture Docs
+        </a>
+
+        <a
+          href="https://github.com/dimaspandu/dompp"
+          class="
+            button
+            button-secondary
+          "
+        >
+          GitHub
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- PHILOSOPHY -->
+  <!-- ================================= -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      Philosophy
+    </h2>
+
+    <p class="section-description">
+
+      DOMPP extends native DOM prototypes
+      with small chainable setters while
+      preserving direct access to browser APIs.
+
+      <br /><br />
+
+      No virtual DOM.
+      No hidden reconciliation.
+      No compiler required.
+
+    </p>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>
+          Direct DOM Mutation
+        </h3>
+
+        <p>
+
+          DOMPP mutates native DOM nodes
+          directly without virtual DOM
+          diffing or reconciliation layers.
+
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          Optional Reactivity
+        </h3>
+
+        <p>
+
+          Choose between local stateful
+          runtime or optional fine-grained
+          signals.
+
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          Existing DOM Enhancement
+        </h3>
+
+        <p>
+
+          Enhance existing server-rendered
+          HTML without subtree recreation
+          or hydration engines.
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- WHAT DOMPP IS NOT -->
+  <!-- ================================= -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      What DOMPP Is Not
+    </h2>
+
+    <p class="section-description">
+
+      DOMPP intentionally avoids several
+      common framework abstractions.
+
+    </p>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>
+          No Virtual DOM
+        </h3>
+
+        <p>
+
+          DOMPP mutates native DOM nodes
+          directly without tree diffing
+          or reconciliation passes.
+
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          No Compiler
+        </h3>
+
+        <p>
+
+          DOMPP does not require JSX,
+          template compilation,
+          or build-time transforms.
+
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          No Hidden Runtime Ownership
+        </h3>
+
+        <p>
+
+          State remains attached directly
+          to DOM elements and follows
+          explicit mutation flow.
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- ARCHITECTURE -->
+  <!-- ================================= -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      Runtime Architecture
+    </h2>
+
+    <p class="section-description">
+
+      DOMPP is designed around explicit
+      mutation flow and native DOM
+      mental models.
+
+    </p>
+
+    <img
+      src="./docs/architecture/runtime-flow.png"
+      alt="Runtime Architecture"
+      class="architecture-preview"
+    />
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- RUNTIME SEMANTICS -->
+  <!-- ================================= -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      Runtime Semantics
+    </h2>
+
+    <p class="section-description">
+
+      DOMPP examples also document
+      runtime behavior and mutation semantics.
+
+    </p>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>
+          Stateful Mutation
+        </h3>
+
+        <p>
+
+          Explore how local state reruns
+          reactive setters and propagates
+          mutation through the DOM.
+
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          Fine-Grained Signals
+        </h3>
+
+        <p>
+
+          Understand direct signal
+          subscriptions and isolated
+          setter-level reactivity.
+
+        </p>
+
+      </div>
+
+      <div class="card">
+
+        <h3>
+          Identity Preservation
+        </h3>
+
+        <p>
+
+          Learn how DOMPP handles
+          node reuse,
+          child replacement,
+          and runtime ownership.
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- EXAMPLES -->
+  <!-- ================================= -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      Examples
+    </h2>
+
+    <p class="section-description">
+
+      DOMPP examples are designed as
+      runtime learning blocks.
+
+      <br /><br />
+
+      Each example progressively explores:
+      deterministic mutation,
+      reactive ownership,
+      DOM identity preservation,
+      fine-grained updates,
+      and browser-native runtime semantics.
+
+    </p>
+
+    <!-- ================================= -->
+    <!-- FOUNDATIONS -->
+    <!-- ================================= -->
+
+    <div class="examples-group">
+
+      <h3>
+        Foundations
+      </h3>
+
+      <div class="examples">
+
+        <a
+          href="./examples/01-basic-text/"
+          class="example-link"
+        >
+
+          <strong>
+            01 — Basic Text
+          </strong>
+
+          Simplest chainable text mutation
+          using native DOM nodes.
+
+        </a>
+
+        <a
+          href="./examples/02-basic-styles/"
+          class="example-link"
+        >
+
+          <strong>
+            02 — Basic Styles
+          </strong>
+
+          Inline style mutation
+          using partial style updates.
+
+        </a>
+
+        <a
+          href="./examples/03-basic-attributes/"
+          class="example-link"
+        >
+
+          <strong>
+            03 — Basic Attributes
+          </strong>
+
+          Unified attribute mutation
+          including boolean attributes.
+
+        </a>
+
+        <a
+          href="./examples/04-basic-children/"
+          class="example-link"
+        >
+
+          <strong>
+            04 — Basic Children
+          </strong>
+
+          Declarative child tree composition
+          without virtual DOM diffing.
+
+        </a>
+
+        <a
+          href="./examples/05-basic-events/"
+          class="example-link"
+        >
+
+          <strong>
+            05 — Basic Events
+          </strong>
+
+          Chainable event listeners
+          with deterministic replacement.
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- MUTATION SEMANTICS -->
+    <!-- ================================= -->
+
+    <div class="examples-group">
+
+      <h3>
+        Mutation Semantics
+      </h3>
+
+      <div class="examples">
+
+        <a
+          href="./examples/06-mutation-consistency/"
+          class="example-link"
+        >
+
+          <strong>
+            06 — Mutation Consistency
+          </strong>
+
+          Deterministic setter behavior
+          and predictable mutation flow.
+
+        </a>
+
+        <a
+          href="./examples/07-children-vs-childnodes/"
+          class="example-link"
+        >
+
+          <strong>
+            07 — children vs childNodes
+          </strong>
+
+          Structural differences between
+          element-only and full node traversal.
+
+        </a>
+
+        <a
+          href="./examples/08-fragment-support/"
+          class="example-link"
+        >
+
+          <strong>
+            08 — Fragment Support
+          </strong>
+
+          Native DocumentFragment support
+          without unnecessary wrappers.
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- REACTIVE RUNTIME -->
+    <!-- ================================= -->
+
+    <div class="examples-group">
+
+      <h3>
+        Reactive Runtime
+      </h3>
+
+      <div class="examples">
+
+        <a
+          href="./examples/09-reactive-counter/"
+          class="example-link"
+        >
+
+          <strong>
+            09 — Reactive Counter
+          </strong>
+
+          Reactive setters driven by
+          local element state.
+
+        </a>
+
+        <a
+          href="./examples/10-reactive-children/"
+          class="example-link"
+        >
+
+          <strong>
+            10 — Reactive Children
+          </strong>
+
+          Declarative reactive child trees
+          rebuilt from state.
+
+        </a>
+
+        <a
+          href="./examples/11-reusable-stateful-elements/"
+          class="example-link"
+        >
+
+          <strong>
+            11 — Reusable Stateful Elements
+          </strong>
+
+          Component-like reusable factories
+          using native DOM nodes.
+
+        </a>
+
+        <a
+          href="./examples/12-cross-element-state/"
+          class="example-link"
+        >
+
+          <strong>
+            12 — Cross Element State
+          </strong>
+
+          External mutation of element state
+          through DOM references.
+
+        </a>
+
+        <a
+          href="./examples/13-existing-dom-enhancement/"
+          class="example-link"
+        >
+
+          <strong>
+            13 — Existing DOM Enhancement
+          </strong>
+
+          Enhance server-rendered DOM
+          without subtree recreation.
+
+        </a>
+
+        <a
+          href="./examples/14-fine-grained-signals/"
+          class="example-link"
+        >
+
+          <strong>
+            14 — Fine-Grained Signals
+          </strong>
+
+          Optional signal-based reactivity
+          with isolated setter reruns.
+
+        </a>
+
+        <a
+          href="./examples/15-existing-dom-enhancement-signals/"
+          class="example-link"
+        >
+
+          <strong>
+            15 — Enhancement + Signals
+          </strong>
+
+          Combine existing DOM enhancement
+          with fine-grained subscriptions.
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- RUNTIME SEMANTICS -->
+    <!-- ================================= -->
+
+    <div class="examples-group">
+
+      <h3>
+        Runtime Semantics
+      </h3>
+
+      <div class="examples">
+
+        <a
+          href="./examples/16-state-equality-behavior/"
+          class="example-link"
+        >
+
+          <strong>
+            16 — State Equality Behavior
+          </strong>
+
+          Explore rerender behavior when
+          mutating identical state values.
+
+        </a>
+
+        <a
+          href="./examples/17-nested-stateful-elements/"
+          class="example-link"
+        >
+
+          <strong>
+            17 — Nested Stateful Elements
+          </strong>
+
+          Parent-child runtime ownership
+          and nested state behavior.
+
+        </a>
+
+        <a
+          href="./examples/18-keyed-list-behavior/"
+          class="example-link"
+        >
+
+          <strong>
+            18 — Keyed List Behavior
+          </strong>
+
+          DOM identity preservation
+          through reused node references.
+
+        </a>
+
+        <a
+          href="./examples/19-dom-identity-preservation/"
+          class="example-link"
+        >
+
+          <strong>
+            19 — DOM Identity Preservation
+          </strong>
+
+          Runtime ownership attached
+          directly to DOM node identity.
+
+        </a>
+
+         <a
+           href="./examples/20-reactive-feed/"
+           class="example-link"
+         >
+
+           <strong>
+             20 — Reactive Feed
+           </strong>
+
+           Prepend and append feed mutation
+           with editable stateful posts.
+
+         </a>
+
+         <a
+           href="./examples/21-jsx-integration/"
+           class="example-link"
+         >
+
+           <strong>
+             21 — JSX Integration
+           </strong>
+
+           Use JSX syntax with a tiny custom pragma factory
+           powered by Babel (or your bundler).
+
+         </a>
+
+       </div>
+
+    </div>
+
+    <!-- ================================= -->
+    <!-- ARCHITECTURE -->
+    <!-- ================================= -->
+
+    <div class="examples-group">
+
+      <h3>
+        Native Runtime Exploration
+      </h3>
+
+      <div class="examples">
+
+        <a
+          href="./docs/architecture/"
+          class="example-link"
+        >
+
+          <strong>
+            Architecture & Runtime Docs
+          </strong>
+
+          Explore runtime flow,
+          mutation architecture,
+          signals,
+          enhancement semantics,
+          and browser-native runtime proposals.
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- EXPERIMENTAL -->
+  <!-- ================================= -->
+
+  <section class="section">
+
+    <h2 class="section-title">
+      Experimental Runtime Proposal
+    </h2>
+
+    <p class="section-description">
+
+      DOMPP explores the idea that
+      browser-native mutation APIs
+      could evolve into a richer runtime layer
+      capable of supporting higher-level
+      frameworks and compilers.
+
+      <br /><br />
+
+      Rather than replacing the DOM,
+      DOMPP investigates how the DOM itself
+      might become the runtime infrastructure.
+
+    </p>
+
+  </section>
+
+  <!-- ================================= -->
+  <!-- FOOTER -->
+  <!-- ================================= -->
+
+  <footer>
+
+    Built on top of native browser APIs
+    and deterministic mutation flow.
+
+    <br /><br />
+
+    <code>
+      No virtual DOM.
+      No compiler.
+      No reconciliation.
+    </code>
+
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../../assets/favicon.svg"
+  />
+
+  <title>
+    State Equality Behavior
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      padding:
+        24px;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+
+      line-height:
+        1.7;
+    }
+
+    h1 {
+      margin-bottom: 12px;
+    }
+
+    .description {
+
+      max-width:
+        900px;
+
+      color:
+        #666;
+
+      margin-bottom:
+        32px;
+    }
+
+    .important {
+
+      background:
+        linear-gradient(
+          135deg,
+          #fff8db,
+          #fff1a8
+        );
+
+      border:
+        1px solid #f0d000;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+
+      margin-bottom:
+        32px;
+
+      color:
+        #5c4b00;
+    }
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        24px;
+    }
+
+    .card {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        24px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .count {
+
+      font-size:
+        56px;
+
+      font-weight:
+        bold;
+
+      margin-bottom:
+        16px;
+    }
+
+    .rerenders {
+
+      color:
+        #666;
+
+      margin-bottom:
+        24px;
+    }
+
+    .row {
+
+      display:
+        flex;
+
+      gap:
+        12px;
+
+      flex-wrap:
+        wrap;
+
+      margin-bottom:
+        24px;
+    }
+
+    button {
+
+      border:
+        none;
+
+      background:
+        black;
+
+      color:
+        white;
+
+      padding:
+        12px 16px;
+
+      border-radius:
+        10px;
+
+      cursor:
+        pointer;
+    }
+
+    pre {
+
+      margin:
+        0;
+
+      overflow:
+        auto;
+
+      background:
+        #111;
+
+      color:
+        #f5f5f5;
+
+      padding:
+        20px;
+
+      border-radius:
+        16px;
+
+      font-size:
+        14px;
+
+      line-height:
+        1.7;
+    }
+
+    code {
+
+      font-family:
+        Consolas,
+        monospace;
+
+      padding:
+        2px 6px;
+
+      border-radius:
+        6px;
+    }
+
+    .code-keyword {
+      color: #ff7b72;
+    }
+
+    .code-method {
+      color: #79c0ff;
+    }
+
+    .code-string {
+      color: #a5d6ff;
+    }
+
+    .code-property {
+      color: #d2a8ff;
+    }
+
+    .code-variable {
+      color: #ffa657;
+    }
+
+    .code-comment {
+      color: #8b949e;
+      font-style: italic;
+    }
+
+    .note {
+
+      margin-top:
+        20px;
+
+      color:
+        #666;
+    }
+
+    @media (max-width: 900px) {
+
+      .layout {
+
+        grid-template-columns:
+          1fr;
+      }
+
+    }
+
+  </style>
+
+</head>
+<body>
+
+<!-- ================================= -->
+<!-- HEADER -->
+<!-- ================================= -->
+
+<h1>
+  State Equality Behavior
+</h1>
+
+<p class="description">
+
+This example demonstrates how DOM++
+handles repeated state updates
+using the same value.
+
+<br /><br />
+
+Unlike frameworks that perform implicit
+equality checks,
+DOM++ reruns reactive setters whenever
+state mutation occurs.
+
+</p>
+
+<!-- ================================= -->
+<!-- IMPORTANT -->
+<!-- ================================= -->
+
+<div class="important">
+
+  <strong>
+    Important:
+  </strong>
+
+  <br /><br />
+
+  DOM++ currently does not perform
+  automatic equality comparison
+  before rerunning reactive setters.
+
+  <br /><br />
+
+  If <code>setState()</code> is called,
+  reactive setters rerun —
+  even if the next value matches
+  the previous value.
+
+  <br /><br />
+
+  This keeps runtime behavior:
+  <ul>
+    <li>deterministic</li>
+    <li>mutation-first</li>
+    <li>explicit</li>
+  </ul>
+
+</div>
+
+<!-- ================================= -->
+<!-- APP -->
+<!-- ================================= -->
+
+<div class="layout">
+
+  <!-- =============================== -->
+  <!-- LIVE EXAMPLE -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+    <div id="app"></div>
+
+  </div>
+
+  <!-- =============================== -->
+  <!-- CODE -->
+  <!-- =============================== -->
+
+  <div class="card">
+
+<pre><code><span class="code-comment">// =====================================</span>
+<span class="code-comment">// ELEMENT</span>
+<span class="code-comment">// =====================================</span>
+<span class="code-keyword">const</span> <span class="code-variable">counter</span> =
+  document
+    .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+    .<span class="code-method">setState</span>({
+      <span class="code-property">count</span>: 0,
+      <span class="code-property">rerenders</span>: 0
+    })
+    .<span class="code-method">setChildren</span>(({
+      state,
+      setState
+    }) => {
+      <span class="code-comment">// =================================</span>
+      <span class="code-comment">// TRACK RERENDERS</span>
+      <span class="code-comment">// =================================</span>
+      state.rerenders++;
+
+      <span class="code-keyword">return</span> [
+        <span class="code-comment">// =============================</span>
+        <span class="code-comment">// COUNT</span>
+        <span class="code-comment">// =============================</span>
+        document
+          .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+          .<span class="code-method">setAttributes</span>({
+            <span class="code-property">class</span>: <span class="code-string">"count"</span>
+          })
+          .<span class="code-method">setText</span>(
+            <span class="code-string">`${state.count}`</span>
+          ),
+
+        <span class="code-comment">// =============================</span>
+        <span class="code-comment">// RERENDERS</span>
+        <span class="code-comment">// =============================</span>
+        document
+          .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+          .<span class="code-method">setAttributes</span>({
+            <span class="code-property">class</span>: <span class="code-string">"rerenders"</span>
+          })
+          .<span class="code-method">setText</span>(
+            <span class="code-string">`Reactive reruns: ${state.rerenders}`</span>
+          ),
+
+        <span class="code-comment">// =============================</span>
+        <span class="code-comment">// BUTTONS</span>
+        <span class="code-comment">// =============================</span>
+        document
+          .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+          .<span class="code-method">setAttributes</span>({
+            <span class="code-property">class</span>: <span class="code-string">"row"</span>
+          })
+          .<span class="code-method">setChildren</span>(
+            <span class="code-comment">// ===========================</span>
+            <span class="code-comment">// INCREMENT</span>
+            <span class="code-comment">// ===========================</span>
+            document
+              .<span class="code-method">createElement</span>(<span class="code-string">"button"</span>)
+              .<span class="code-method">setText</span>(
+                <span class="code-string">"Increment"</span>
+              )
+              .<span class="code-method">setEvents</span>({
+                <span class="code-property">click</span>() {
+                  setState({
+                    <span class="code-property">count</span>:
+                      state.count + 1
+                  });
+                }
+              }),
+
+            <span class="code-comment">// ===========================</span>
+            <span class="code-comment">// SAME VALUE</span>
+            <span class="code-comment">// ===========================</span>
+            document
+              .<span class="code-method">createElement</span>(<span class="code-string">"button"</span>)
+              .<span class="code-method">setText</span>(
+                <span class="code-string">"Set Same Value"</span>
+              )
+              .<span class="code-method">setEvents</span>({
+                <span class="code-property">click</span>() {
+                  setState({
+                    <span class="code-property">count</span>:
+                      state.count
+                  });
+                }
+              }),
+
+            <span class="code-comment">// ===========================</span>
+            <span class="code-comment">// RESET</span>
+            <span class="code-comment">// ===========================</span>
+            document
+              .<span class="code-method">createElement</span>(<span class="code-string">"button"</span>)
+              .<span class="code-method">setText</span>(
+                <span class="code-string">"Reset"</span>
+              )
+              .<span class="code-method">setEvents</span>({
+                <span class="code-property">click</span>() {
+                  setState({
+                    <span class="code-property">count</span>: 0
+                  });
+                }
+              })
+          )
+      ];
+    });
+
+<span class="code-comment">// =====================================</span>
+<span class="code-comment">// APP</span>
+<span class="code-comment">// =====================================</span>
+app.<span class="code-method">setChildren</span>(
+  counter
+);</code></pre>
+
+    <div class="note">
+
+      Try pressing
+      <strong>
+        "Set Same Value"
+      </strong>
+      repeatedly.
+
+      <br /><br />
+
+      Notice that rerender count
+      continues increasing even though
+      the value itself does not change.
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ================================= -->
+<!-- SCRIPT -->
+<!-- ================================= -->
+
+<script
+  type="module"
+  src="../../src/index.js"
+></script>
+
+<script type="module">
+
+// =====================================
+// ELEMENT
+// =====================================
+
+const counter =
+
+  document
+
+    .createElement("div")
+
+    .setState({
+
+      count: 0,
+
+      rerenders: 0
+
+    })
+
+    .setChildren(({
+
+      state,
+      setState
+
+    }) => {
+
+      // =================================
+      // TRACK RERENDERS
+      // =================================
+
+      state.rerenders++;
+
+      return [
+
+        // =============================
+        // COUNT
+        // =============================
+
+        document
+
+          .createElement("div")
+
+          .setAttributes({
+            class: "count"
+          })
+
+          .setText(
+            `${state.count}`
+          ),
+
+        // =============================
+        // RERENDERS
+        // =============================
+
+        document
+
+          .createElement("div")
+
+          .setAttributes({
+            class: "rerenders"
+          })
+
+          .setText(
+
+            `Reactive reruns: ${state.rerenders}`
+
+          ),
+
+        // =============================
+        // BUTTONS
+        // =============================
+
+        document
+
+          .createElement("div")
+
+          .setAttributes({
+            class: "row"
+          })
+
+          .setChildren(
+
+            // =========================
+            // INCREMENT
+            // =========================
+
+            document
+
+              .createElement("button")
+
+              .setText(
+                "Increment"
+              )
+
+              .setEvents({
+                click() {
+
+                  setState({
+                    count:
+                      state.count + 1
+                  });
+
+                }
+              }),
+
+            // =========================
+            // SAME VALUE
+            // =========================
+
+            document
+
+              .createElement("button")
+
+              .setText(
+                "Set Same Value"
+              )
+
+              .setEvents({
+                click() {
+
+                  setState({
+                    count:
+                      state.count
+                  });
+
+                }
+              }),
+
+            // =========================
+            // RESET
+            // =========================
+
+            document
+
+              .createElement("button")
+
+              .setText(
+                "Reset"
+              )
+
+              .setEvents({
+                click() {
+
+                  setState({
+                    count: 0
+                  });
+
+                }
+              })
+          )
+      ];
+
+    });
+
+// =====================================
+// APP
+// =====================================
+
+app.setChildren(
+  counter
+);
+
+</script>
+
+</body>
+</html>

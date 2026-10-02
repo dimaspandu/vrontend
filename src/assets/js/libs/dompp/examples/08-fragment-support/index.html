@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="../../assets/favicon.svg"
+  />
+
+  <title>
+    Fragment Support
+  </title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+
+      margin: 0;
+
+      font-family:
+        Inter,
+        system-ui,
+        sans-serif;
+
+      background:
+        #f5f5f5;
+
+      color:
+        #222;
+
+      line-height:
+        1.7;
+    }
+
+    .container {
+
+      max-width:
+        1100px;
+
+      margin:
+        0 auto;
+
+      padding:
+        48px 24px 96px;
+    }
+
+    h1 {
+
+      font-size:
+        48px;
+
+      margin-bottom:
+        16px;
+    }
+
+    .description {
+
+      max-width:
+        760px;
+
+      color:
+        #666;
+
+      margin-bottom:
+        40px;
+    }
+
+    .important {
+
+      background:
+        linear-gradient(
+          135deg,
+          #eefaf1,
+          #dcfce7
+        );
+
+      border:
+        1px solid #8fd3a8;
+
+      border-radius:
+        16px;
+
+      padding:
+        20px;
+
+      margin-bottom:
+        40px;
+
+      color:
+        #215732;
+    }
+
+    .layout {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      gap:
+        32px;
+
+      align-items:
+        start;
+    }
+
+    .panel {
+
+      background:
+        white;
+
+      border-radius:
+        20px;
+
+      padding:
+        28px;
+
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.06);
+    }
+
+    .panel h2 {
+
+      margin-top:
+        0;
+
+      font-size:
+        22px;
+
+      margin-bottom:
+        20px;
+    }
+
+    .card {
+
+      background:
+        white;
+
+      border-radius:
+        16px;
+
+      padding:
+        24px;
+
+      box-shadow:
+        0 10px 32px rgba(0,0,0,0.08);
+
+      max-width:
+        500px;
+    }
+
+    .item {
+
+      padding:
+        12px;
+
+      border-radius:
+        10px;
+
+      background:
+        #f0f0f0;
+
+      margin-bottom:
+        12px;
+    }
+
+    pre {
+
+      margin:
+        0;
+
+      overflow:
+        auto;
+
+      background:
+        #111;
+
+      color:
+        #f5f5f5;
+
+      padding:
+        20px;
+
+      border-radius:
+        16px;
+
+      font-size:
+        14px;
+
+      line-height:
+        1.7;
+    }
+
+    code {
+
+      font-family:
+        Consolas,
+        monospace;
+
+      padding:
+        2px 6px;
+
+      border-radius:
+        6px;
+    }
+
+    .code-keyword {
+      color: #ff7b72;
+    }
+
+    .code-method {
+      color: #79c0ff;
+    }
+
+    .code-string {
+      color: #a5d6ff;
+    }
+
+    .code-property {
+      color: #d2a8ff;
+    }
+
+    .code-variable {
+      color: #ffa657;
+    }
+
+    .code-comment {
+      color: #8b949e;
+      font-style: italic;
+    }
+
+    .notes {
+
+      margin-top:
+        24px;
+
+      color:
+        #666;
+
+      font-size:
+        14px;
+    }
+
+    @media (max-width: 900px) {
+
+      .layout {
+
+        grid-template-columns:
+          1fr;
+      }
+    }
+
+  </style>
+
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ================================= -->
+  <!-- HEADER -->
+  <!-- ================================= -->
+
+  <h1>
+    Fragment Support
+  </h1>
+
+  <p class="description">
+
+    DOMPP also supports
+    <code>DocumentFragment</code>.
+
+    <br /><br />
+
+    Fragments allow multiple nodes to be
+    grouped temporarily without introducing
+    unnecessary wrapper elements into
+    the final DOM tree.
+
+  </p>
+
+  <!-- ================================= -->
+  <!-- IMPORTANT -->
+  <!-- ================================= -->
+
+  <div class="important">
+
+    <strong>
+      Important
+    </strong>
+
+    <br /><br />
+
+    <code>DocumentFragment</code>
+    is a native browser feature.
+
+    <br /><br />
+
+    DOMPP extends fragments with the same
+    chainable mutation APIs used by normal
+    DOM elements.
+
+    <br /><br />
+
+    When inserted into the DOM,
+    fragment children are moved directly
+    into the target container.
+
+    <br /><br />
+
+    The fragment itself does not remain
+    in the final DOM tree.
+
+  </div>
+
+  <!-- ================================= -->
+  <!-- LAYOUT -->
+  <!-- ================================= -->
+
+  <div class="layout">
+
+    <!-- ================================= -->
+    <!-- CODE -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Fragment Pattern
+      </h2>
+
+<pre><code><span class="code-keyword">const</span> <span class="code-variable">fragment</span> =
+  document
+    .<span class="code-method">createDocumentFragment</span>()
+    .<span class="code-method">setChildren</span>(
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+        .<span class="code-method">setAttributes</span>({
+          <span class="code-property">class</span>: <span class="code-string">"item"</span>
+        })
+        .<span class="code-method">setText</span>(
+          <span class="code-string">"Fragment Child A"</span>
+        ),
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+        .<span class="code-method">setAttributes</span>({
+          <span class="code-property">class</span>: <span class="code-string">"item"</span>
+        })
+        .<span class="code-method">setText</span>(
+          <span class="code-string">"Fragment Child B"</span>
+        ),
+      document
+        .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+        .<span class="code-method">setAttributes</span>({
+          <span class="code-property">class</span>: <span class="code-string">"item"</span>
+        })
+        .<span class="code-method">setText</span>(
+          <span class="code-string">"Fragment Child C"</span>
+        )
+    );
+
+<span class="code-keyword">const</span> <span class="code-variable">card</span> =
+  document
+    .<span class="code-method">createElement</span>(<span class="code-string">"div"</span>)
+    .<span class="code-method">setAttributes</span>({
+      <span class="code-property">class</span>: <span class="code-string">"card"</span>
+    })
+    .<span class="code-method">setChildren</span>(
+      fragment
+    );
+
+app
+  .<span class="code-method">setChildren</span>(
+    card
+  );</code></pre>
+
+      <div class="notes">
+
+        <strong>
+          Notes
+        </strong>
+
+        <ul>
+
+          <li>
+            fragments are native browser
+            structures
+          </li>
+
+          <li>
+            fragment children are inserted
+            directly into the target DOM tree
+          </li>
+
+          <li>
+            no extra wrapper element
+            is created
+          </li>
+
+          <li>
+            DOMPP extends fragments with
+            the same setter APIs as elements
+          </li>
+
+        </ul>
+
+      </div>
+
+    </section>
+
+    <!-- ================================= -->
+    <!-- LIVE PREVIEW -->
+    <!-- ================================= -->
+
+    <section class="panel">
+
+      <h2>
+        Live Preview
+      </h2>
+
+      <div id="app"></div>
+
+    </section>
+
+  </div>
+
+</div>
+
+<script
+  type="module"
+  src="../../src/index.js"
+></script>
+
+<script type="module">
+
+const fragment =
+
+  document.createDocumentFragment()
+
+    .setChildren(
+
+      document.createElement("div")
+
+        .setAttributes({
+          class: "item"
+        })
+
+        .setText(
+          "Fragment Child A"
+        ),
+
+      document.createElement("div")
+
+        .setAttributes({
+          class: "item"
+        })
+
+        .setText(
+          "Fragment Child B"
+        ),
+
+      document.createElement("div")
+
+        .setAttributes({
+          class: "item"
+        })
+
+        .setText(
+          "Fragment Child C"
+        )
+    );
+
+const card =
+
+  document.createElement("div")
+
+    .setAttributes({
+      class: "card"
+    })
+
+    .setChildren(
+      fragment
+    );
+
+app.setChildren(
+  card
+);
+
+</script>
+
+</body>
+</html>
