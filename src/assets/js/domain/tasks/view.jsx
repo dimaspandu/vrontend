@@ -12,14 +12,15 @@ export default function view() {
     />
   );
 
-  // dompp stateful mode: the setChildren callback re-runs on every setState,
-  // so changing the store only requires a refresh.
   const taskList = <ul class="task-list" />;
+  const refresh = () => taskList.setState({ tasks: list() });
+
+  // dompp stateful mode: the setChildren callback re-runs on every setState,
+  // so changing the store only requires a refresh. `refresh` is passed in
+  // because renderItems lives in module scope, not inside view().
   taskList
     .setState({ tasks: list() })
-    .setChildren(({ state }) => renderItems(state.tasks));
-
-  const refresh = () => taskList.setState({ tasks: list() });
+    .setChildren(({ state }) => renderItems(state.tasks, refresh));
 
   const form = (
     <form
@@ -55,7 +56,7 @@ export default function view() {
   );
 }
 
-function renderItems(tasks) {
+function renderItems(tasks, refresh) {
   if (!tasks.length) {
     return <li class="empty">Nothing here yet. Add your first task above.</li>;
   }

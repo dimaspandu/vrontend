@@ -15,11 +15,13 @@ export default function view(ctx) {
   }
 
   const body = <div class="detail__body" />;
-  body
-  .setState({ task: find(id) })
-  .setChildren(({ state }) => renderTask(state.task));
-
   const refresh = () => body.setState({ task: find(id) });
+
+  // `refresh` is passed in because renderTask lives in module scope,
+  // not inside view().
+  body
+    .setState({ task: find(id) })
+    .setChildren(({ state }) => renderTask(state.task, refresh));
 
   return (
     <section class="panel">
@@ -32,7 +34,7 @@ export default function view(ctx) {
   );
 }
 
-function renderTask(task) {
+function renderTask(task, refresh) {
   return (
     <>
       <h2
