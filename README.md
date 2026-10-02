@@ -8,15 +8,41 @@ DOM elements, a real router, and a real HTTP server — the boilerplate only
 supplies the wiring so a new project starts from a working app instead of an
 empty folder.
 
-| Concern | Provided by | Type |
-| --- | --- | --- |
-| HTTP server | [hashttp](libs/hashttp) | vendored, Node |
-| Bundler + JSX | [ngapack](libs/ngapack) | vendored, Node |
-| Routing | [historypp](src/assets/js/libs/historypp) | vendored, browser |
-| DOM + reactivity | [dompp](src/assets/js/libs/dompp) | vendored, browser |
+## Libraries
 
-All four are vendored in this repository. There is no `node_modules` and no
-install step.
+vrontend is assembled from four independent libraries. Each one is developed
+and documented separately, and all four are vendored into this repository —
+`libs/` for the Node-side tools, `src/assets/js/libs/` for the browser-side
+ones. There is no `node_modules` and no install step.
+
+| Concern | Library | Source | Documentation | Runs in |
+| --- | --- | --- | --- | --- |
+| Bundler + JSX transpiler | **ngapack** | [github](https://github.com/dimaspandu/ngapack) | — | Node |
+| HTTP server | **hashttp** | [github](https://github.com/dimaspandu/hashttp) | — | Node |
+| SPA router | **historypp** | [github](https://github.com/dimaspandu/historypp) | [historypp.digital](https://historypp.digital/) | browser |
+| DOM + reactivity | **dompp** | [github](https://github.com/dimaspandu/dompp) | [dompp.digital](https://dompp.digital/) | browser |
+
+**ngapack** — module bundler and the JSX transpiler. Walks the graph from
+`src/pre-index.js`, emits an IIFE bundle plus one chunk per dynamically
+imported view, and runs `terser` for minification.
+
+**hashttp** — the HTTP server behind both `run.dev.js` and `run.start.js`. Static
+file serving, a route table with per-route transforms, and pre-rendering support.
+
+**historypp** — the client-side router. Matching (including `:param` segments),
+`pushState` navigation, middleware, and lifecycle hooks. Patches `window.history`.
+
+**dompp** — DOM helpers and reactivity. Adds `setText`, `setChildren`,
+`setStyles`, `setAttributes`, `setEvents`, `setState`, `setEnhancement`, and
+`setFineGrained` to `Element.prototype`, plus `createSignal` on `Document`.
+
+The browser-side libraries keep version-pinned source folders, so upgrading one
+is a single line change in its `src/index.js`:
+
+```js
+// src/assets/js/libs/dompp/src/index.js
+import "./1.1.1/index.js";   // <- switch to the version you want
+```
 
 ## Requirements
 
@@ -37,6 +63,9 @@ With the `package.json` in this repo the same commands are available as
 The dev server serves `src/` unbundled, so the browser loads native ES modules
 straight from disk. Edit any file and reload — no rebuild step in between.
 
+All three commands read their configuration from `.env`; see
+[Configuration](#configuration).
+
 ## How it fits together
 
 ```
@@ -48,6 +77,9 @@ run.bundle.js ───► ngapack
 
 run.start.js ─────► hashttp :7200, publicDir = dist/
 ```
+
+Ports shown are the defaults; all three scripts take `PORT` and `HOST` from
+`.env`.
 
 In the browser:
 
@@ -68,8 +100,9 @@ The server only knows the app shell; the browser owns the real routes.
 - **Server side** (`app.routes.js`): each client route pattern maps to the HTML
   shell, so a hard reload or a shared deep link such as `/task/12` still boots
   the app. Add a top-level route there when you add one to the router.
-- **Client side** (`src/index.js`): `historypp` handles matching, navigation,
-  and lifecycle hooks.
+- **Client side** (`src/index.js`): historypp handles matching, navigation,
+  and lifecycle hooks. Full API reference:
+  [historypp.digital](https://historypp.digital/).
 
 `src/index.js` also intercepts internal link clicks, so views can use ordinary
 `<a href>` markup instead of wiring every link to a click handler.
@@ -79,6 +112,8 @@ The server only knows the app shell; the browser owns the real routes.
 ```
 .
 ├── app.routes.js            client route patterns shared by the dev/prod servers
+├── env.js                   configuration loader, reads .env
+├── .env.example             template for local configuration
 ├── run.dev.js               dev server
 ├── run.bundle.js            production build
 ├── run.start.js             production preview
@@ -101,6 +136,35 @@ The server only knows the app shell; the browser owns the real routes.
             │   └── tasks.js
             └── libs/        vendored browser libraries
 ```
+
+## Configuration
+
+The `run.*.js` scripts read their settings from a `.env` file in the repository
+root, loaded by `env.js` using Node's built-in `process.loadEnvFile`. There is
+no dotenv dependency, and every key is optional.
+
+Copy `.env.example` to `.env` to get started. `.env` is gitignored, so your
+local settings stay out of the repository.
+
+| Key | Default | Used by | Meaning |
+| --- | --- | --- | --- |
+| `PORT` | `7200` | dev, preview | Port the server binds to |
+| `HOST` | `localhost` | dev, preview | Interface to bind; `0.0.0.0` exposes the dev server on your network |
+| `MINIFY` | `true` | build | Minify the production build (needs `terser` on PATH) |
+| `JSX_FACTORY` | `elementBuilder` | dev, build | Name of the JSX factory the transpiler emits calls to |
+| `OUTPUT_DIR` | `dist` | build, preview | Build output folder, relative to the repository root |
+
+A malformed value fails fast with a message naming the key, rather than
+silently falling back. Note that changing `OUTPUT_DIR` changes the folder name,
+so add it to `.gitignore` if you rename it.
+
+### About `MINIFY`
+
+`run.bundle.js` sets ngapack's `uglified` flag from `MINIFY`. With `MINIFY=true`
+the build shells out to the `terser` CLI. **If `terser` is not installed, ngapack
+falls back to posting your source code to a third-party minifier API**
+(`libs/ngapack/src/helper/uglifyJS.js:106`). Set `MINIFY=false` to keep the
+build entirely offline — the output is simply unminified.
 
 ## Conventions
 
@@ -187,6 +251,8 @@ and `<fragment>`.
 
 ### Reactivity with dompp
 
+Full API reference: [dompp.digital](https://dompp.digital/).
+
 dompp adds `setText`, `setChildren`, `setStyles`, `setAttributes`, `setEvents`,
 `setState`, `setEnhancement`, and `setFineGrained` to `Element.prototype`, so
 import it before any view runs. It also installs `Document.prototype.createSignal`.
@@ -238,4 +304,7 @@ Vendored library folders are skipped by that scan.
 
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 dimaspandu
+
+The four vendored libraries under `libs/` and `src/assets/js/libs/` are
+copyrighted by their respective authors and keep their own licenses.
