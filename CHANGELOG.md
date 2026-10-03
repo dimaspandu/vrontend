@@ -5,6 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Docker support.** A two-stage `Dockerfile`: the build stage runs
+  `run.bundle.js`, the runtime stage serves the output with `run.start.js` on
+  `node:22-alpine`. Only hashttp and the built output reach the final image.
+  `PORT` and `HOST` are read from the process environment, so no `.env` is
+  baked in, and `MINIFY` can be passed as a build argument. A `.dockerignore`
+  keeps the build context small and excludes local state.
+
 ## [1.0.0] - 2026-10-02
 
 First stable release. The project is published as a complete, self-contained

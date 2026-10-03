@@ -1,0 +1,45 @@
+# Build context only. Keep it small and free of local state.
+
+# Local configuration must never be baked into an image.
+.env
+.env.*
+!.env.example
+
+# Generated locally; the image builds its own dist/.
+dist
+build-out
+out
+node_modules
+
+# Version control and editor state.
+.git
+.github
+.gitignore
+.kilo
+.kilocode
+.opencode
+.worktrees
+.vscode
+.idea
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs and coverage.
+*.log
+coverage
+
+# Docker files themselves.
+Dockerfile
+.dockerignore
+
+# Not needed at runtime.
+README.md
+CHANGELOG.md
+LICENSE
+
+# Vendored library fixtures that the build and server never load.
+libs/*/demo
+libs/*/test
+libs/*/libs/*/demo
+libs/*/libs/*/test

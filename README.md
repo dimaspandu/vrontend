@@ -66,6 +66,34 @@ straight from disk. Edit any file and reload — no rebuild step in between.
 All three commands read their configuration from `.env`; see
 [Configuration](#configuration).
 
+### Docker
+
+The image is a two-stage build: the first stage runs `run.bundle.js`, the second
+serves the result with `run.start.js`. Only hashttp and the built output reach
+the final image — the bundler and the browser libraries stay in the build stage.
+
+```bash
+docker build -t vrontend .
+docker run --rm -p 7200:7200 vrontend
+```
+
+The container listens on `0.0.0.0:7200` by default. `PORT` and `HOST` are read
+from the process environment, so no `.env` file is needed inside the image:
+
+```bash
+docker run --rm -e PORT=8080 -p 8080:8080 vrontend
+```
+
+`.dockerignore` keeps the build context small and makes sure a local `.env`,
+`dist/`, and editor state never reach the daemon.
+
+The build stage installs `terser` for minification. If you would rather keep the
+build fully offline, build with `-e MINIFY=false`:
+
+```bash
+docker build --build-arg MINIFY=false -t vrontend .
+```
+
 ## How it fits together
 
 ```
@@ -114,6 +142,7 @@ The server only knows the app shell; the browser owns the real routes.
 ├── app.routes.js            client route patterns shared by the dev/prod servers
 ├── env.js                   configuration loader, reads .env
 ├── .env.example             template for local configuration
+├── Dockerfile               two-stage image: build, then serve
 ├── run.dev.js               dev server
 ├── run.bundle.js            production build
 ├── run.start.js             production preview
