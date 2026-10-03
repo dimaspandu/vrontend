@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-03
+
 ### Added
 
 - **Docker support.** A two-stage `Dockerfile`: the build stage runs
@@ -88,4 +90,5 @@ boilerplate: four vendored libraries, no `node_modules`, no install step.
   `domain/404/handler.jsx` with its inlined copy of the stylesheet) and the
   unreferenced `components/Card.jsx`.
 
+[1.1.0]: https://github.com/dimaspandu/vrontend/releases/tag/v1.1.0
 [1.0.0]: https://github.com/dimaspandu/vrontend/releases/tag/v1.0.0
