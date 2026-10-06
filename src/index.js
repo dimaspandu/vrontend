@@ -4,11 +4,13 @@ import "./assets/js/libs/dompp/src/index.js";
 import tasksHandler from "./assets/js/domain/tasks/handler.js";
 import taskHandler from "./assets/js/domain/task/handler.js";
 import notFoundHandler from "./assets/js/domain/notfound/handler.js";
+import counterHandler from "./assets/js/domain/counter/handler.js";
 
 const app = document.getElementById("app");
 
 history.router("/", tasksHandler(app));
 history.router("/task/:id", taskHandler(app));
+history.router("/counter", counterHandler(app));
 history.notFound(notFoundHandler(app));
 
 document.addEventListener("click", onLinkClick);

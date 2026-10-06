@@ -32,6 +32,9 @@ const svgOnlyTags = new Set([
 
 export default function elementBuilder(tag, props, ...children) {
   let node;
+  if (typeof tag === "function") {
+    return tag(props, ...children);
+  }
   if (tag === "fragment" || tag === "Fragment") {
     node = document.createDocumentFragment();
   } else if (svgOnlyTags.has(tag)) {

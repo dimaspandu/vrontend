@@ -183,12 +183,15 @@ The server only knows the app shell; the browser owns the real routes.
     ├── 404.html             served when no route or file matches
     ├── index.js             runtime entry: router wiring
     └── assets/
-        ├── css/styles.css
+        ├── css/
+        │   ├── styles.css
+        │   └── counter.module.css
         ├── images/
         └── js/
             ├── domain/      one folder per route
             │   ├── tasks/   /        list + form
             │   ├── task/    /task/:id  detail, dynamic param
+            │   ├── counter/ /counter   uppercase component example
             │   └── notfound/
             ├── factories/
             │   └── elementBuilder.js
@@ -322,6 +325,52 @@ dompp setters:
 Fragments work both ways — `<>...</>` (compiled to `elementBuilder.fragment(...)`)
 and `<fragment>`.
 
+Uppercase tags are treated as function components. When the transpiler sees
+`<Counter initial={0} />`, it emits `elementBuilder(Counter, { initial: 0 })`.
+The factory detects that `tag` is a function and invokes it directly, so
+components can return JSX instead of calling `elementBuilder` manually.
+
+```jsx
+import elementBuilder from "../../factories/elementBuilder.js";
+
+function Counter(props) {
+  const initial = (props && props.initial) || 0;
+  let count = initial;
+
+  const display = <span class="counter__value">{count}</span>;
+
+  return (
+    <div class="counter">
+      {display}
+      <button
+        class="counter__dec"
+        type="button"
+        on={{ click() { count--; display.setText(count); } }}
+      >
+        −
+      </button>
+      <button
+        class="counter__inc"
+        type="button"
+        on={{ click() { count++; display.setText(count); } }}
+      >
+        +
+      </button>
+    </div>
+  );
+}
+
+export default function view() {
+  return (
+    <section class="panel">
+      <h1 class="panel__title">Counter</h1>
+      <p class="panel__subtitle">Uppercase component example</p>
+      <Counter initial={0} />
+    </section>
+  );
+}
+```
+
 ### Reactivity with dompp
 
 Full API reference: [dompp.digital](https://dompp.digital/).
@@ -361,6 +410,36 @@ replaces the node's contents; a setter with a plain value writes directly.
 Plain CSS in `src/assets/css/styles.css`, imported by `src/pre-index.js` so the
 bundler copies it to `dist/`. The example uses BEM-style class names
 (`task-item__title`), but nothing in the boilerplate depends on that.
+
+For route-specific styles, use a CSS module (`*.module.css`) and import it
+dynamically inside the route handler. The `{ with: { type: "css" } }` assertion
+causes ngapack to bundle the stylesheet as a module that resolves to a
+`CSSStyleSheet`. The handler applies it to `document.adoptedStyleSheets` before
+rendering the view, so the CSS is only loaded when that route is visited.
+
+```js
+// src/assets/js/domain/<name>/handler.js
+export default function handler(app) {
+  return {
+    onMeet: async () => {
+      const { default: stylesheet } = await import(
+        "../../css/<name>.module.css",
+        { with: { type: "css" } }
+      );
+
+      if (stylesheet instanceof CSSStyleSheet) {
+        document.adoptedStyleSheets = [
+          ...document.adoptedStyleSheets,
+          stylesheet
+        ];
+      }
+
+      const { default: view } = await import("./view.jsx");
+      app.setChildren(view());
+    }
+  };
+}
+```
 
 ## Notes on the dev server
 

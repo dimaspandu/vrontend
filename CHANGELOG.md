@@ -5,6 +5,31 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-10-06
+
+### Added
+
+- **Uppercase JSX component support.** `<Counter initial={0} />` now transpiles to
+  `elementBuilder(Counter, { initial: 0 })`. The JSX factory detects function
+  `tag` values and invokes them directly, so components can return JSX instead
+  of calling `elementBuilder` manually.
+- **`/counter` route** with a working counter example demonstrating the new
+  uppercase component pattern and per-route CSS module loading.
+- **`src/assets/css/counter.module.css`** scoped styles for the counter route,
+  loaded dynamically only when `/counter` is visited.
+
+### Changed
+
+- `src/assets/js/factories/elementBuilder.js` now supports function components:
+  when `tag` is a function, it calls `tag(props, ...children)` instead of
+  `document.createElement(tag)`.
+- Counter view rewritten from manual `elementBuilder(...)` calls to pure JSX.
+
+### Documentation
+
+- README updated with uppercase component examples and a guide for dynamic
+  per-route CSS modules.
+
 ## [1.1.1] - 2026-10-06
 
 ### Changed
@@ -98,5 +123,5 @@ boilerplate: four vendored libraries, no `node_modules`, no install step.
   `domain/404/handler.jsx` with its inlined copy of the stylesheet) and the
   unreferenced `components/Card.jsx`.
 
-[1.1.0]: https://github.com/dimaspandu/vrontend/releases/tag/v1.1.0
-[1.0.0]: https://github.com/dimaspandu/vrontend/releases/tag/v1.0.0
+[1.2.0]: https://github.com/dimaspandu/vrontend/releases/tag/v1.2.0
+[1.1.1]: https://github.com/dimaspandu/vrontend/releases/tag/v1.1.1
