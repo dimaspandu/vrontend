@@ -1,0 +1,12 @@
+[submodule "libs/hashttp"]
+	path = libs/hashttp
+	url = https://github.com/dimaspandu/hashttp.git
+[submodule "libs/ngapack"]
+	path = libs/ngapack
+	url = https://github.com/dimaspandu/ngapack.git
+[submodule "src/assets/js/libs/historypp"]
+	path = src/assets/js/libs/historypp
+	url = https://github.com/dimaspandu/historypp.git
+[submodule "src/assets/js/libs/dompp"]
+	path = src/assets/js/libs/dompp
+	url = https://github.com/dimaspandu/dompp.git
