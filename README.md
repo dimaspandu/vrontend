@@ -11,9 +11,9 @@ empty folder.
 ## Libraries
 
 vrontend is assembled from four independent libraries. Each one is developed
-and documented separately, and all four are vendored into this repository —
-`libs/` for the Node-side tools, `src/assets/js/libs/` for the browser-side
-ones. There is no `node_modules` and no install step.
+and documented separately, and all four are vendored into this repository as
+git submodules — `libs/` for the Node-side tools, `src/assets/js/libs/` for the
+browser-side ones. There is no `node_modules` and no install step.
 
 | Concern | Library | Source | Documentation | Runs in |
 | --- | --- | --- | --- | --- |
@@ -43,6 +43,35 @@ is a single line change in its `src/index.js`:
 // src/assets/js/libs/dompp/src/index.js
 import "./1.1.1/index.js";   // <- switch to the version you want
 ```
+
+## Setup (first clone)
+
+```bash
+git clone --recurse-submodules https://github.com/dimaspandu/vrontend.git
+cd vrontend
+MINIFY=false npm run build
+MINIFY=false npm run dev
+```
+
+`--recurse-submodules` is required because the four top-level submodules contain
+three nested submodules (5 gitlinks total inside `libs/`). If you already cloned
+without it, run:
+
+```bash
+git submodule update --init --recursive
+```
+
+The repo is zero-dependency: do **not** run `npm install`. Doing so creates a
+`package-lock.json` that is not tracked by this repository.
+
+### Vendored path mapping
+
+| Former plain-file path | Current submodule path | Pinned tag |
+| --- | --- | --- |
+| `libs/hashttp/` | `libs/hashttp/` | `v2.0.0` |
+| `libs/ngapack/` | `libs/ngapack/` | `v2.0.0` |
+| `src/assets/js/libs/dompp/` | `src/assets/js/libs/dompp/` | `v1.5.0` |
+| `src/assets/js/libs/historypp/` | `src/assets/js/libs/historypp/` | `v2.0.6` |
 
 ## Requirements
 
@@ -146,6 +175,8 @@ The server only knows the app shell; the browser owns the real routes.
 ├── run.dev.js               dev server
 ├── run.bundle.js            production build
 ├── run.start.js             production preview
+├── package.json             scripts + engine constraint
+├── .gitmodules              submodule definitions (4 top-level + 3 nested)
 └── src/
     ├── pre-index.js         bundler entry: lists every asset to emit
     ├── index.html           app shell: layout + #app mount point
@@ -163,7 +194,20 @@ The server only knows the app shell; the browser owns the real routes.
             │   └── elementBuilder.js
             ├── store/
             │   └── tasks.js
-            └── libs/        vendored browser libraries
+            └── libs/        browser-side submodules
+                ├── dompp/
+                └── historypp/
+```
+
+And inside `libs/` (Node-side submodules):
+
+```
+libs/
+├── hashttp/
+│   └── libs/roution/        nested submodule
+└── ngapack/
+    ├── libs/djs/            nested submodule
+    └── libs/js-analyzer/    nested submodule
 ```
 
 ## Configuration
@@ -329,11 +373,14 @@ bundler copies it to `dist/`. The example uses BEM-style class names
   hashttp memoizes served files for the lifetime of the process, so without
   this a `.jsx` edit would not show up until the server was restarted.
 
-Vendored library folders are skipped by that scan.
+Vendored library folders (`libs/`, `src/assets/js/libs/`) are skipped by that
+scan. Submodule metadata (`.git/`, `.gitmodules`) is never bundled because
+ngapack follows the import graph from its entry, not directory scans.
 
 ## License
 
 [MIT](LICENSE) © 2026 dimaspandu
 
 The four vendored libraries under `libs/` and `src/assets/js/libs/` are
-copyrighted by their respective authors and keep their own licenses.
+tracked as git submodules and are copyrighted by their respective authors and
+keep their own licenses.

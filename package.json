@@ -1,13 +1,14 @@
 {
   "name": "vrontend",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "description": "Vanilla JS SPA boilerplate. Zero runtime dependencies.",
   "scripts": {
     "dev": "node run.dev.js",
     "build": "node run.bundle.js",
-    "start": "node run.start.js"
+    "start": "node run.start.js",
+    "prepare": "git submodule update --init --recursive"
   },
   "engines": {
     "node": ">=22.7"
